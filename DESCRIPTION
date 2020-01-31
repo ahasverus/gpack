@@ -1,0 +1,21 @@
+Package: gpack
+Title: Tools for webscraping Google Services (Scholar, Pictures, Trends, Search)
+Version: 0.0.0.9000
+Date: 2020/01/31
+Authors@R:
+  person(
+    given  = "Nicolas",
+    family = "Casajus",
+    role   = c("aut", "cre"),
+    email  = "nicolas.casajus@gmail.com"
+  )
+Description: This package provides tools for webscraping Google Services (Scholar, Pictures, Trends, Search) using OpenVPN to get around IP bans. Webscrap can be performed using RSelenium or classical webscraping (\code{rvest} + \code{httr}).
+License: MIT + file LICENSE
+URL: https://github.com/ahasverus/gpack
+BugReports: https://github.com/ahasverus/gpack/issues
+Depends: R (>= 3.6.0)
+Encoding: UTF-8
+LazyData: true
+NeedsCompilation: no
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.0.2
