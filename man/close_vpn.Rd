@@ -6,6 +6,9 @@
 \usage{
 close_vpn(verbose = TRUE)
 }
+\arguments{
+\item{verbose}{A boolean. If TRUE, prints informations.}
+}
 \value{
 Nothing.
 }

@@ -5,8 +5,8 @@
 #'
 #' @param config_path The path to the folder containing server configuration files.
 #' @param exposed_ip User non-protected public IPv4 address obtained with \code{get_ip()}.
-#' @param country [optional] The ISO-2 code of the country to pick up a server.
-#' @param ignore_files [optional] TVector of servers configuration file not to be connected.
+#' @param country (optional) The ISO-2 code of the country to pick up a server.
+#' @param ignore_files (optional) TVector of servers configuration file not to be connected.
 #' @param verbose A boolean. If TRUE, prints connexion informations.
 #'
 #' @return The selected server.

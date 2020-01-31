@@ -4,6 +4,8 @@
 #'
 #' @return Nothing.
 #'
+#' @param verbose A boolean. If TRUE, prints informations.
+#'
 #' @export
 #'
 #' @author Nicolas CASAJUS, \email{nicolas.casajus@@gmail.com}

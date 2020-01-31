@@ -17,9 +17,9 @@ change_ip(
 
 \item{exposed_ip}{User non-protected public IPv4 address obtained with \code{get_ip()}.}
 
-\item{country}{\link{optional} The ISO-2 code of the country to pick up a server.}
+\item{country}{(optional) The ISO-2 code of the country to pick up a server.}
 
-\item{ignore_files}{\link{optional} TVector of servers configuration file not to be connected.}
+\item{ignore_files}{(optional) TVector of servers configuration file not to be connected.}
 
 \item{verbose}{A boolean. If TRUE, prints connexion informations.}
 }
