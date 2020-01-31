@@ -1,3 +1,18 @@
+#' @title Disconnect from VPN and close OpenVPN Daemon
+#'
+#' @description This function disconnects from a VPN server and closes the OpenVPN Daemon.
+#'
+#' @return Nothing.
+#'
+#' @export
+#'
+#' @author Nicolas CASAJUS, \email{nicolas.casajus@@gmail.com}
+#'
+#' @examples
+#' close_vpn()
+
+
+
 close_vpn <- function(verbose = TRUE) {
 
   std <- system("killall openvpn", ignore.stderr = TRUE)
@@ -14,7 +29,7 @@ close_vpn <- function(verbose = TRUE) {
     } else {
 
       ip <- get_ip()
-      
+
       cat("OpenVPN was already closed.\n")
     }
 

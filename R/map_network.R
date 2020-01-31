@@ -1,3 +1,19 @@
+#' @title Check for Internet Connexion
+#'
+#' @description This function checks if the sustem is connected to Internet.
+#' R/RStudio must be running under super-user do (sudo).
+#'
+#' @return Nothing. An error is generated if your system is disconnected from Internet.
+#'
+#' @export
+#'
+#' @author Nicolas CASAJUS, \email{nicolas.casajus@@gmail.com}
+#'
+#' @examples
+#' map_network()
+
+
+
 map_network <- function() {
 
   is_sudo()
