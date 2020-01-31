@@ -24,7 +24,11 @@
 
 change_ip <- function(config_path = "~/.ovpn", exposed_ip, country, ignore_files = NULL, verbose = TRUE) {
 
-  if (missing(exposed_ip) || !is.null(exposed_ip)) {
+  if (missing(exposed_ip)) {
+    stop("Please provide your non-protected public IP address (run `get_ip()`).")
+  }
+
+  if (is.null(exposed_ip)) {
     stop("Please provide your non-protected public IP address (run `get_ip()`).")
   }
 
@@ -49,20 +53,23 @@ change_ip <- function(config_path = "~/.ovpn", exposed_ip, country, ignore_files
     config_files <- config_files[which(!(config_files %in% ignore_files))]
   }
 
-  if (!missing(country) || !is.null(country)) {
+  if (!missing(country)) {
 
-    if (length(country) > 1) {
-      stop("Argument 'country' must be length 1.")
-    }
+    if (!is.null(country)) {
 
-    if (nchar(country) != 2) {
-      stop("Argument 'country' must be the ISO-2 code of the country.")
-    }
+      if (length(country) > 1) {
+        stop("Argument 'country' must be length 1.")
+      }
 
-    config_files <- config_files[grep(paste0("^", country), config_files, ignore.case = TRUE)]
+      if (nchar(country) != 2) {
+        stop("Argument 'country' must be the ISO-2 code of the country.")
+      }
 
-    if (!length(config_files)) {
-      stop(paste0("No config files available for ", toupper(country), "."))
+      config_files <- config_files[grep(paste0("^", country), config_files, ignore.case = TRUE)]
+
+      if (!length(config_files)) {
+        stop(paste0("No config files available for ", toupper(country), "."))
+      }
     }
   }
 
