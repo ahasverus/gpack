@@ -9,7 +9,9 @@
 #' @author Nicolas CASAJUS, \email{nicolas.casajus@@gmail.com}
 #'
 #' @examples
+#' \dontrun{
 #' get_ip()
+#' }
 
 
 
