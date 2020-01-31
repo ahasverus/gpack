@@ -15,6 +15,9 @@
 
 close_vpn <- function(verbose = TRUE) {
 
+  is_unix()
+  is_sudo()
+
   std <- system("killall openvpn", ignore.stderr = TRUE)
 
   if (verbose) {
