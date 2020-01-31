@@ -1,4 +1,5 @@
-# gpack
+gpack <img src="man/figures/gpack.png" height="120" align="right"/>
+=========================================================
 
 <!-- badges: start -->
 [![Travis build status](https://travis-ci.com/ahasverus/gpack.svg?token=yHzmKJ7Fz8oZEQsjxUY1&branch=master)](https://travis-ci.com/ahasverus/gpack)
