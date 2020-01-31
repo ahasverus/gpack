@@ -10,11 +10,11 @@
 #' @author Nicolas CASAJUS, \email{nicolas.casajus@@gmail.com}
 #'
 #' @examples
-#' map_network()
+#' is_connected()
 
 
 
-map_network <- function() {
+is_connected <- function() {
 
   is_sudo()
 
