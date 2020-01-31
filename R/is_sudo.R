@@ -1,10 +1,9 @@
-#' @title Check for Unix System and Super User
+#' @title Check for Super User (sudo)
 #'
-#' @description This function checks 1) if the system is running under Unix
-#' (GNU/Linux and macOS) and 2) if R/RStudio is running under super-user do (sudo).
-#' This last one is required to control OpenVPN and change IP address.
+#' @description This function checks if R/RStudio is running under super-user do (sudo).
+#' This is required to control OpenVPN and change IP address.
 #'
-#' @return Nothing. An error is generated if the two prerequisites are not met.
+#' @return Nothing. An error is generated if this prerequisite is not met.
 #'
 #' @export
 #'
@@ -17,10 +16,7 @@
 
 is_sudo <- function() {
 
-  if (!(.Platform$OS.type == "unix")) {
-
-    stop("Only Unix (GNU/Linux or macOS) systems are supported.")
-  }
+  is_unix()
 
   if (system("echo $EUID", intern = TRUE) != 0) {
 

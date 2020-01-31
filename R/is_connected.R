@@ -16,6 +16,7 @@
 
 is_connected <- function() {
 
+  is_unix()
   is_sudo()
 
   interfaces <- system("ifconfig", intern = TRUE)
