@@ -1,7 +1,31 @@
-change_ip <- function(config_path = "~/.ovpn_tcp", exposed_ip, country, ignore_files = NULL, verbose = TRUE) {
+#' @title Run OpenVPN and Change IP Address
+#'
+#' @description This function changes your IP Address by connecting to a randomly
+#' selected third-party server using OpenVPN software.
+#'
+#' @param config_path The path to the folder containing server configuration files.
+#' @param exposed_ip User non-protected public IPv4 address obtained with \code{get_ip()}.
+#' @param country [optional] The ISO-2 code of the country to pick up a server.
+#' @param ignore_files [optional] TVector of servers configuration file not to be connected.
+#' @param verbose A boolean. If TRUE, prints connexion informations.
+#'
+#' @return The selected server.
+#'
+#' @export
+#'
+#' @author Nicolas CASAJUS, \email{nicolas.casajus@@gmail.com}
+#'
+#' @examples
+#' \dontrun{
+#' change_ip()
+#' }
+
+
+
+change_ip <- function(config_path = "~/.ovpn", exposed_ip, country, ignore_files = NULL, verbose = TRUE) {
 
   if (missing(exposed_ip) || !is.null(exposed_ip)) {
-    stop("Please indicate your non-protected public IP address (run `get_ip()`).")
+    stop("Please provide your non-protected public IP address (run `get_ip()`).")
   }
 
   is_unix()
