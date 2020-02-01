@@ -2,15 +2,20 @@
 % Please edit documentation in R/change_ua.R
 \name{change_ua}
 \alias{change_ua}
-\title{Get a Random User Agents}
+\title{Get a Random User Agent}
 \usage{
-change_ua()
+change_ua(verbose = TRUE)
+}
+\arguments{
+\item{verbose}{A boolean. If TRUE, the new user agent is printed.}
 }
 \value{
 The selected user agent.
 }
 \description{
-This function randomly selects a user agent among a list of 81 obtained from \url{https://techblog.willshouse.com/2012/01/03/most-common-user-agents/} (Last Updated: Fri, 31 Jan 2020).
+This function randomly selects a user agent among a list of 81
+obtained from \url{https://techblog.willshouse.com/2012/01/03/most-common-user-agents/}.
+The new user agent is checked using the What's My UA API (\url{https://www.whatsmyua.info/api/v1/ua}).
 }
 \examples{
 \dontrun{
