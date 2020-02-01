@@ -19,3 +19,9 @@ LazyData: true
 NeedsCompilation: no
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.0.2
+Imports: 
+    RSelenium,
+    httr,
+    rvest,
+    jsonlite,
+    usethis
