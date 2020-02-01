@@ -1,7 +1,4 @@
 language: r
-r:
-  - oldrel
-
 warnings_are_errors: false
 sudo: required
 cache: packages
