@@ -8,6 +8,9 @@ notifications:
     recipients:
       - nicolas.casajus@gmail.com
 
+r:
+  -oldrel
+
 r_packages:
   - devtools
 
