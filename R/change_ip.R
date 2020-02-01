@@ -17,7 +17,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' change_ip()
+#' change_ip(exposed_ip = get_ip())
+#' change_ip(exposed_ip = get_ip(), country = "es")
 #' }
 
 
