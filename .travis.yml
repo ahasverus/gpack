@@ -1,4 +1,7 @@
 language: r
+r:
+  - oldrel
+
 warnings_are_errors: false
 sudo: required
 cache: packages
@@ -7,9 +10,6 @@ notifications:
   email:
     recipients:
       - nicolas.casajus@gmail.com
-
-r:
-  -oldrel
 
 r_packages:
   - devtools
