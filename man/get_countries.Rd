@@ -24,6 +24,7 @@ countries (listed from NordVPN servers). User can search for specific patterns
 \examples{
 \dontrun{
 get_countries()
+
 get_countries(pattern = "Fre")
 get_countries(pattern = "Fr")
 get_countries(pattern = "^Fr")

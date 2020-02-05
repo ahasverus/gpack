@@ -24,6 +24,7 @@ languages used by Google Scholar. User can search for specific patterns
 \examples{
 \dontrun{
 get_languages()
+
 get_languages(pattern = "spain")
 get_languages(pattern = "Sp")
 get_languages(pattern = "^Sp")

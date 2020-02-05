@@ -10,6 +10,8 @@
 #'   - language: the language name
 #'   - iso_2: the language ISO-2 code
 #'
+#' @import usethis
+#'
 #' @export
 #'
 #' @author Nicolas CASAJUS, \email{nicolas.casajus@@gmail.com}
@@ -17,6 +19,7 @@
 #' @examples
 #' \dontrun{
 #' get_languages()
+#'
 #' get_languages(pattern = "spain")
 #' get_languages(pattern = "Sp")
 #' get_languages(pattern = "^Sp")
@@ -38,15 +41,45 @@ get_languages <- function(pattern) {
   } else {
 
     if (is.null(pattern)) {
-      stop("Argument 'pattern' cannot be NULL.")
+
+      usethis::ui_stop(
+        stick(
+          "
+            Argument
+            {usethis::ui_field('pattern')}
+            cannot be
+            {usethis::ui_value('NULL')}
+          "
+        )
+      )
     }
 
     if (length(pattern) != 1) {
-      stop("Argument 'pattern' must be a character of length 1.")
+
+      usethis::ui_stop(
+        stick(
+          "
+            Argument
+            {usethis::ui_field('pattern')}
+            must be a
+            {usethis::ui_value('character of length 1')}
+          "
+        )
+      )
     }
 
     if (!is.character(pattern)) {
-      stop("Argument 'agent' must be a character of length 1.")
+
+      usethis::ui_stop(
+        stick(
+          "
+            Argument
+            {usethis::ui_field('pattern')}
+            must be a
+            {usethis::ui_value('character of length 1')}
+          "
+        )
+      )
     }
 
     results <-  rbind(
@@ -59,13 +92,26 @@ get_languages <- function(pattern) {
       results <- results[!duplicated(results[ , "language"]), ]
       rownames(results) <- NULL
 
-      usethis::ui_done("{nrow(results)} matches found.")
+      usethis::ui_done(
+        stick(
+          "
+            {nrow(results)}
+            matches found
+          ",
+          indent = " "
+        )
+      )
 
       return(results)
 
     } else {
 
-      usethis::ui_todo("No match found.")
+      usethis::ui_todo(
+        stick(
+          "No matches found",
+          indent = " "
+        )
+      )
     }
   }
 }
