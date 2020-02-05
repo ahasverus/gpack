@@ -21,6 +21,9 @@ get_ua()
 
 ua <- change_ua()
 get_ua(agent = ua)
+
+ua <- change_ua("Mozilla/5.0 (Linux x86_64) Gecko/20100101 Firefox/72.0")
+get_ua(agent = ua)
 }
 }
 \author{
