@@ -1,4 +1,4 @@
-#' @title Disconnect from VPN and close OpenVPN Daemon
+#' @title Disconnect from VPN Server and close OpenVPN Daemon
 #'
 #' @description This function disconnects from a VPN server and closes the OpenVPN Daemon.
 #'
@@ -20,9 +20,15 @@
 close_vpn <- function(verbose = TRUE) {
 
   is_unix()
-  is_sudo()
 
-  std <- system("killall openvpn", ignore.stderr = TRUE)
+  std <- system(
+    paste(
+      "echo",
+      paste0("'", unix_password(), "'"),
+      "| sudo -S killall openvpn"
+    ),
+    ignore.stderr = TRUE
+  )
 
   if (verbose) {
 
@@ -31,15 +37,33 @@ close_vpn <- function(verbose = TRUE) {
       Sys.sleep(2)
       ip <- get_ip()
 
-      cat("You are now disconnected from OpenVPN.\n")
+      usethis::ui_done(
+        stick(
+          "OpenVPN has been successfully stopped",
+          indent = " "
+        )
+      )
 
     } else {
 
       ip <- get_ip()
 
-      cat("OpenVPN was already closed.\n")
+      usethis::ui_todo(
+        stick(
+          "OpenVPN was already stopped",
+          indent = " "
+        )
+      )
     }
 
-    cat("Your public IP address is:", ip, "\n")
+    usethis::ui_info(
+      stick(
+        "
+          Unprotected public IP address:
+          {usethis::ui_value(ip)}
+        ",
+        indent = " "
+      )
+    )
   }
 }

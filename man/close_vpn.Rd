@@ -2,7 +2,7 @@
 % Please edit documentation in R/close_vpn.R
 \name{close_vpn}
 \alias{close_vpn}
-\title{Disconnect from VPN and close OpenVPN Daemon}
+\title{Disconnect from VPN Server and close OpenVPN Daemon}
 \usage{
 close_vpn(verbose = TRUE)
 }
