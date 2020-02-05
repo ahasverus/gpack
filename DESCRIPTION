@@ -21,8 +21,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.0.2
 Imports:
     RSelenium,
+    xml2,
     httr,
     rvest,
     jsonlite,
     usethis
-Remotes: ropensci/RSelenium
