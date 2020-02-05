@@ -2,6 +2,9 @@
 #'
 #' @description This function pastes in a single line a multi-lines string.
 #'
+#' @param ... String to collapse.
+#' @param indent Character to add before the string.
+#'
 #' @return A character.
 #'
 #' @export

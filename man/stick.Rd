@@ -6,6 +6,11 @@
 \usage{
 stick(..., indent = "")
 }
+\arguments{
+\item{...}{String to collapse.}
+
+\item{indent}{Character to add before the string.}
+}
 \value{
 A character.
 }
