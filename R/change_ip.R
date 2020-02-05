@@ -4,53 +4,114 @@
 #' selected third-party server using OpenVPN software.
 #'
 #' @param config_path The path to the folder containing server configuration files.
-#' @param exposed_ip User non-protected public IPv4 address obtained with \code{get_ip()}.
-#' @param country (optional) The ISO-2 code of the country to pick up a server.
-#' @param ignore_files (optional) TVector of servers configuration file not to be connected.
+#' @param exposed_ip User unprotected public IPv4 address obtained with \code{close_vpn()}.
+#' @param country (optional) The ISO-2 code of the country (>= 1) from which a VPN server will be pick up .
+#' @param ignore_files (optional) Vector of servers configuration file not to be connected.
 #' @param verbose A boolean. If TRUE, prints connexion informations.
 #'
 #' @return The selected server.
 #'
+#' @import usethis
+#' 
 #' @export
 #'
 #' @author Nicolas CASAJUS, \email{nicolas.casajus@@gmail.com}
 #'
 #' @examples
 #' \dontrun{
+#' close_vpn()
+#' ip <- get_ip()
 #' change_ip(exposed_ip = get_ip())
+#'
+#' close_vpn()
 #' change_ip(exposed_ip = get_ip(), country = "es")
 #' }
 
 
 
-change_ip <- function(config_path = "~/.ovpn", exposed_ip, country, ignore_files = NULL, verbose = TRUE) {
+change_ip <- function(
+  config_path = "~/.ovpn", exposed_ip, country, ignore_files = NULL,
+  verbose = TRUE
+) {
+
+  is_unix()
 
   if (missing(exposed_ip)) {
-    stop("Please provide your non-protected public IP address (run `get_ip()`).")
+
+    usethis::ui_stop(
+      stick(
+        "
+          Please provide your unprotected public IP address.
+          Run
+          {usethis::ui_code('close_vpn()')}
+        "
+      )
+    )
   }
 
   if (is.null(exposed_ip)) {
-    stop("Please provide your non-protected public IP address (run `get_ip()`).")
+
+    usethis::ui_stop(
+      stick(
+        "
+          Please provide your unprotected public IP address.
+          Run
+          {usethis::ui_code('close_vpn()')}
+        "
+      )
+    )
   }
 
-  is_unix()
-  is_sudo()
+  is_openvpn <- system(
+    paste(
+      "echo",
+      paste0("'", unix_password(), "'"),
+      "| sudo -S which openvpn"
+    ),
+    ignore.stdout = TRUE,
+    ignore.stderr = TRUE
+  )
 
-  if (system("which openvpn", ignore.stdout = TRUE) == 1) {
-    stop("Unable to find the Unix command 'openvpn'.")
+  if (is_openvpn == 1) {
+
+    usethis::ui_stop(
+      stick(
+        "
+          Unable to find the Unix command
+          {usethis::ui_field('openvpn')}
+        "
+      )
+    )
   }
 
   if (!dir.exists(config_path)) {
-    stop(paste0("Cannot find the folder ", config_path, "."))
+
+    usethis::ui_stop(
+      stick(
+        "
+          Cannot find the folder
+          {usethis::ui_value(config_path)}
+        "
+      )
+    )
   }
 
   config_files <- list.files(path = config_path, pattern = "\\.ovpn$")
 
   if (!length(config_files)) {
-    stop(paste0("Unable to find config files in ", config_path, "."))
+
+    usethis::ui_stop(
+      stick(
+        "
+          Unable to find config files in
+          {usethis::ui_value(config_path)}
+        "
+      )
+    )
   }
 
   if (!is.null(ignore_files)) {
+
     config_files <- config_files[which(!(config_files %in% ignore_files))]
   }
 
@@ -58,31 +119,76 @@ change_ip <- function(config_path = "~/.ovpn", exposed_ip, country, ignore_files
 
     if (!is.null(country)) {
 
-      if (length(country) > 1) {
-        stop("Argument 'country' must be length 1.")
+      if (!length(country)) {
+
+        usethis::ui_stop(
+          stick(
+            "
+              Argument
+              {usethis::ui_field('country')}
+              must be a
+              {usethis::ui_value('character of length >= 1')}
+            "
+          )
+        )
       }
 
-      if (nchar(country) != 2) {
-        stop("Argument 'country' must be the ISO-2 code of the country.")
+      if (!is.character(country)) {
+
+        usethis::ui_stop(
+          stick(
+            "
+              Argument
+              {usethis::ui_field('country')}
+              must be a
+              {usethis::ui_value('character of length >= 1')}
+            "
+          )
+        )
       }
 
-      config_files <- config_files[grep(paste0("^", country), config_files, ignore.case = TRUE)]
+
+      pattern <- paste0(paste0("^", country), collapse = "|")
+      config_files <- config_files[grep(pattern, config_files, ignore.case = TRUE)]
 
       if (!length(config_files)) {
-        stop(paste0("No config files available for ", toupper(country), "."))
+
+        usethis::ui_stop(
+          stick(
+            "
+              No config files available for
+              {usethis::ui_value(toupper(paste0(country, collapse = ", ")))}
+            "
+          )
+        )
       }
     }
   }
 
+
   config_file <- sample(config_files, 1)
 
-  system("killall openvpn", ignore.stderr = TRUE)
+  invisible(
+    system(
+      paste(
+        "echo",
+        paste0("'", unix_password(), "'"),
+        "| sudo -S killall openvpn"
+      ),
+      ignore.stderr = TRUE
+    )
+  )
 
-  system(
-    paste(
-      "openvpn --config",
-      file.path(config_path, config_file),
-      "--daemon --auth-nocache"
+  invisible(
+    system(
+      paste(
+        "echo",
+        paste0("'", unix_password(), "'"),
+        "| sudo -S openvpn --config",
+        file.path(config_path, config_file),
+        "--daemon --auth-nocache"
+      ),
+      ignore.stderr = TRUE
     )
   )
 
@@ -91,13 +197,28 @@ change_ip <- function(config_path = "~/.ovpn", exposed_ip, country, ignore_files
   ip <- get_ip()
 
   if (ip == exposed_ip) {
-    stop("Unable to connect OpenVPN to server.")
+
+    usethis::ui_stop(
+      stick(
+        "
+          Unable to reach the
+          {usethis::ui_value('VPN server')}
+        "
+      )
+    )
   }
 
   if (verbose) {
 
-    cat("You are now connected to:", config_file, "\n")
-    cat("with the IP address:", ip, "\n")
+    usethis::ui_done(
+      stick(
+        "
+          New public IP address:
+          {usethis::ui_value(ip)}
+        ",
+        indent = " "
+      )
+    )
   }
 
   return(config_file)

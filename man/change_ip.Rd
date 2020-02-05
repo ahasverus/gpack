@@ -15,11 +15,11 @@ change_ip(
 \arguments{
 \item{config_path}{The path to the folder containing server configuration files.}
 
-\item{exposed_ip}{User non-protected public IPv4 address obtained with \code{get_ip()}.}
+\item{exposed_ip}{User unprotected public IPv4 address obtained with \code{close_vpn()}.}
 
-\item{country}{(optional) The ISO-2 code of the country to pick up a server.}
+\item{country}{(optional) The ISO-2 code of the country (>= 1) from which a VPN server will be pick up .}
 
-\item{ignore_files}{(optional) TVector of servers configuration file not to be connected.}
+\item{ignore_files}{(optional) Vector of servers configuration file not to be connected.}
 
 \item{verbose}{A boolean. If TRUE, prints connexion informations.}
 }
@@ -32,7 +32,11 @@ selected third-party server using OpenVPN software.
 }
 \examples{
 \dontrun{
+close_vpn()
+ip <- get_ip()
 change_ip(exposed_ip = get_ip())
+
+close_vpn()
 change_ip(exposed_ip = get_ip(), country = "es")
 }
 }
