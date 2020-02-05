@@ -20,6 +20,14 @@ is_unix <- function() {
 
   if (!(.Platform$OS.type == "unix")) {
 
-    stop("Only Unix (GNU/Linux or macOS) systems are supported.")
+    usethis::ui_stop(
+      stick(
+        "
+          Only
+          {usethis::ui_value('Unix systems')}
+          are supported
+        "
+      )
+    )
   }
 }
