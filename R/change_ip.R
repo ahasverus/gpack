@@ -12,7 +12,7 @@
 #' @return The selected server.
 #'
 #' @import usethis
-#' 
+#'
 #' @export
 #'
 #' @author Nicolas CASAJUS, \email{nicolas.casajus@@gmail.com}
@@ -210,12 +210,20 @@ change_ip <- function(
 
   if (verbose) {
 
+    iso_2   <- substr(config_file, 1, 2)
+    country <- get_countries()[which(get_countries()$iso_2 == iso_2), "country"]
+
+
+
     usethis::ui_done(
       stick(
-        "
-          New public IP address:
-          {usethis::ui_value(ip)}
-        ",
+        paste0(
+          "New public IP address: ",
+          usethis::ui_value(ip),
+          " (",
+          usethis::ui_field(country),
+          ")"
+        ),
         indent = " "
       )
     )
