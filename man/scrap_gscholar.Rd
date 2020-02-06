@@ -10,19 +10,20 @@ scrap_gscholar(
   exclude_terms = NULL,
   search_author = NULL,
   search_source = NULL,
+  metadata = FALSE,
   where = NULL,
   years = NULL,
   lang = NULL,
   start = 0,
+  n_max = NULL,
   include_patents = FALSE,
   include_citations = FALSE,
   selenium = FALSE,
-  browser = "firefox",
+  port = 4567L,
   openvpn = TRUE,
   config_path = "~/.ovpn",
-  exposed_ip,
   ovpn_country,
-  user_agent = TRUE,
+  agent = TRUE,
   sleep = 1,
   verbose = TRUE
 )
@@ -38,6 +39,8 @@ scrap_gscholar(
 
 \item{search_source}{A character vector of publication sources to search for.}
 
+\item{metadata}{...}
+
 \item{where}{Search in the whole document ('any') or only in the title ('title').}
 
 \item{years}{A vector of 1 or 2 years specifying the temporal extent of the search.}
@@ -46,23 +49,23 @@ scrap_gscholar(
 
 \item{start}{A numeric specifying the number of the first results from which the results are extracted.}
 
+\item{n_max}{A numeric specifying the number of results to extract.}
+
 \item{include_patents}{A boolean. If TRUE, patents are included in the search results.}
 
 \item{include_citations}{A boolean. If TRUE, citations are included in the search results.}
 
 \item{selenium}{A boolean. If TRUE, webscraping is performed with the Selenium technology.}
 
-\item{browser}{The browser name ('chrome' or 'firefox'). Ignored if \code{selenium = FALSE}.}
+\item{port}{The port number to run on Selenium server.}
 
 \item{openvpn}{A boolean. If TRUE, public IP address will be randomly changed.}
 
 \item{config_path}{The path to the folder containing server configuration files.}
 
-\item{exposed_ip}{User non-protected public IPv4 address obtained with \code{get_ip()}.}
-
 \item{ovpn_country}{The ISO-2 code of the country to pick up a server. Use \code{get_countries()} to get a list.}
 
-\item{user_agent}{A boolean. If TRUE, browser user agent will be randomly changed.}
+\item{agent}{A boolean. If TRUE, browser user agent will be randomly changed.}
 
 \item{sleep}{The time interval (in seconds) between two sub-requests.}
 
@@ -87,7 +90,7 @@ and the total number of citations). As no API is provided by Google Scholar
 (except the one for authors with a Google Scholar ID), this function webscraps
 the service using \code{RSelenium} or the packages \code{rvest} and \code{httr}.
 To bypass Google IP bans, user is strongly encouraged to set the arguments
-\code{openvpn} and \code{user_agent} as \code{TRUE}. In this way, every 10-20
+\code{openvpn} and \code{agent} as \code{TRUE}. In this way, every 10-20
 sub-requests your IP and your user agent will be automatically and randomly changed.
 }
 \examples{

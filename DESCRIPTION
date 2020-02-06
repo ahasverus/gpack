@@ -25,4 +25,6 @@ Imports:
     httr,
     rvest,
     jsonlite,
-    usethis
+    cli,
+    usethis,
+    crayon
