@@ -38,4 +38,6 @@ unix_password <- function() {
       )
     )
   }
+
+  return(pwd)
 }
