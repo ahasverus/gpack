@@ -14,7 +14,7 @@
 #' @param exclude_terms A character vector of terms to exclude from the search.
 #' @param search_author A character vector of authors to search for.
 #' @param search_source A character vector of publication sources to search for.
-#' @param metadata ...
+#' @param metadata A boolean. If TRUE, all publications data are extracted. Otherwise, only the total number of publications is returned.
 #' @param where Search in the whole document ('any') or only in the title ('title').
 #' @param years A vector of 1 or 2 years specifying the temporal extent of the search.
 #' @param lang The ISO-2 code of the language to search for. Use \code{get_languages()} to get a list.
@@ -22,7 +22,6 @@
 #' @param n_max A numeric specifying the number of results to extract.
 #' @param include_patents A boolean. If TRUE, patents are included in the search results.
 #' @param include_citations A boolean. If TRUE, citations are included in the search results.
-#' @param selenium A boolean. If TRUE, webscraping is performed with the Selenium technology.
 #' @param port The port number to run on Selenium server.
 #' @param openvpn A boolean. If TRUE, public IP address will be randomly changed.
 #' @param config_path The path to the folder containing server configuration files.
@@ -30,6 +29,8 @@
 #' @param agent A boolean. If TRUE, browser user agent will be randomly changed.
 #' @param sleep The time interval (in seconds) between two sub-requests.
 #' @param verbose A boolean. If TRUE, connexion and webscraping informations are printing.
+#' @param keep_html A boolean. If TRUE, HTML pages are kept.
+#' @param output_path The path to the folder to save data.
 #'
 #' @return A 7-columns data frame with:
 #'   - query: the query terms
@@ -62,13 +63,16 @@ scrap_gscholar <- function(
   search_terms, exact = TRUE, exclude_terms = NULL, search_author = NULL,
   search_source = NULL, metadata = FALSE, where = NULL, years = NULL,
   lang = NULL, start = 0, n_max = NULL, include_patents = FALSE,
-  include_citations = FALSE, selenium = FALSE, port = 4567L, openvpn = TRUE,
+  include_citations = FALSE, port = 4567L, openvpn = TRUE,
   config_path = "~/.ovpn", ovpn_country, agent = TRUE, sleep = 1,
-  verbose = TRUE
+  verbose = TRUE, keep_html = FALSE, output_path = "."
 ) {
 
 
-  ### Parameters checks   ----------
+
+  ### Parameters checks                                                         ----------
+
+
 
   if (is.null(where)) {
     where <- "any"
@@ -192,7 +196,7 @@ scrap_gscholar <- function(
 
     if (is.null(port)) {
 
-      port <- 0
+      port <- 4567L
     }
 
     if (length(port) != 1) {
@@ -320,21 +324,21 @@ scrap_gscholar <- function(
   env <- new.env()
   env$exact             <- exact
   env$metadata          <- metadata
-  env$selenium          <- selenium
   env$openvpn           <- openvpn
   env$agent             <- agent
   env$verbose           <- verbose
   env$include_patents   <- include_patents
   env$include_citations <- include_citations
+  env$keep_html         <- keep_html
 
   check_boolean("exact", env)
   check_boolean("metadata", env)
-  check_boolean("selenium", env)
   check_boolean("openvpn", env)
   check_boolean("agent", env)
   check_boolean("verbose", env)
   check_boolean("include_patents", env)
   check_boolean("include_citations", env)
+  check_boolean("keep_html", env)
 
 
   if (
@@ -403,6 +407,12 @@ scrap_gscholar <- function(
     ovpn_country <- NULL
   }
 
+
+
+  ### Welcome message                                                           ----------
+
+
+
   if (verbose) {
 
     cli::cat_line()
@@ -445,8 +455,6 @@ scrap_gscholar <- function(
     terms <- paste0(" Searching for ", terms)
 
     usethis::ui_info(terms)
-
-
 
     term_0 <- " Searching"
 
@@ -501,7 +509,10 @@ scrap_gscholar <- function(
   }
 
 
-  ### Change IP address   ----------
+
+  ### Change IP address                                                         ----------
+
+
 
   if (openvpn) {
 
@@ -557,7 +568,10 @@ scrap_gscholar <- function(
   }
 
 
+
   ### Change User Agent                                                         ----------
+
+
 
   if (agent) {
 
@@ -569,47 +583,48 @@ scrap_gscholar <- function(
   }
 
 
+
   ### Start RSelenium server                                                    ----------
 
-  if (selenium) {
 
-    if (agent) {
 
-      rs_driver <- rsDriver(
-        port              = port,
-        browser           = "firefox",
-        verbose           = FALSE,
-        extraCapabilities = makeFirefoxProfile(
-          list(
-            general.useragent.override = uagent
-          )
+  if (agent) {
+
+    rs_driver <- rsDriver(
+      port              = port,
+      browser           = "firefox",
+      verbose           = FALSE,
+      extraCapabilities = makeFirefoxProfile(
+        list(
+          general.useragent.override = uagent
         )
       )
+    )
 
-    } else {
+  } else {
 
-      rs_driver <- rsDriver(
-        port    = port,
-        browser = "firefox",
-        verbose = FALSE
-      )
-    }
-
-    rs_client <- rs_driver$client
-    closed    <- FALSE
+    rs_driver <- rsDriver(
+      port    = port,
+      browser = "firefox",
+      verbose = FALSE
+    )
   }
+
+  rs_client <- rs_driver$client
 
 
   next_btn   <- vector("list", 1)        # Next Page Button (used in while loop)
   gs_results <- data.frame()             # Results Storage
-  k          <- 1
-  display    <- TRUE
+
 
 
   while (length(next_btn)) {
 
 
+
     ### Write GS request                                                        ----------
+
+
 
     url <- paste0(
       "https://scholar.google.com/scholar?as_q=",      # URL Root
@@ -642,34 +657,51 @@ scrap_gscholar <- function(
       years[2]
     )
 
+
+
+    ### Shorten GS request                                                      ----------
+
+
+
     url <- gsub("&[a-z]{1,}_[a-z]{1,}=%22%22", "", url)
     url <- gsub("&[a-z]{1,}_[a-z]{1,}=&", "&", url)
     url <- gsub("&[a-z]{1,}=&", "&", url)
     url <- gsub("&[a-z]{1,}_[a-z]{1,}=$", "", url)
 
 
+
     Sys.sleep(sleep)
+
 
 
     ### Open URL in Browser                                                     ----------
 
-    if (agent) {
 
-      session <- GET(url, user_agent(uagent))
 
-    } else  {
-
-      session <- GET(url)
-
-    }
+    rs_client$navigate(url)
 
 
 
-    ### Check for Ban                                                           ----------
+    ### Check for Ban                                                         ----------
 
-    while (session$status_code != 200) { # 429
+
+
+    k       <- 1
+    captcha <- rs_client$findElements(using = "id", value = "gs_captcha_c")
+
+
+
+    while (length(captcha)) {
+
+
 
       Sys.sleep(sleep)
+
+
+
+      ### Ban messages                                                        ----------
+
+
 
       if (!openvpn) {
 
@@ -693,12 +725,17 @@ scrap_gscholar <- function(
           stick(
             "
               Trying to connect to another server.
-              Attempt number
+              Attempt
               {usethis::ui_value(k)}
             ",
             indent = " "
           )
         )
+
+
+
+        ### Change IP address                                                 ----------
+
 
         close_vpn(verbose = FALSE)
 
@@ -712,76 +749,100 @@ scrap_gscholar <- function(
             verbose      = verbose
           )
         )
-        k <- k + 1
-      }
 
 
-      if (selenium) {
 
-        rs_client$close()
-        invisible(rs_driver$server$stop())
-        closed <- TRUE
-      }
-
-      if (agent) {
-
-        session <- GET(url, user_agent(uagent))
-
-      } else  {
-
-        session <- GET(url)
-      }
-    }
+        ### Relaunch RSelenium server                                         ----------
 
 
-    if (selenium) {
 
-      if (closed) {
+        if (k == 5) {
 
-        if (agent) {
+          rs_client$close()
+          invisible(rs_driver$server$stop())
 
-          rs_driver <- rsDriver(
-            port              = port,
-            browser           = "firefox",
-            verbose           = FALSE,
-            extraCapabilities = makeFirefoxProfile(
-              list(
-                general.useragent.override = change_ua(verbose)
+          Sys.sleep(sleep)
+
+          if (agent) {
+
+            rs_driver <- rsDriver(
+              port              = port,
+              browser           = "firefox",
+              verbose           = FALSE,
+              extraCapabilities = makeFirefoxProfile(
+                list(
+                  general.useragent.override = change_ua(verbose)
+                )
               )
             )
-          )
 
-        } else {
+          } else {
 
-          rs_driver <- rsDriver(
-            port    = port,
-            browser = "firefox",
-            verbose = FALSE
+            rs_driver <- rsDriver(
+              port    = port,
+              browser = "firefox",
+              verbose = FALSE
+            )
+          }
+
+          rs_client <- rs_driver$client
+          rs_client$navigate(url)
+
+        }  # e_o if rselenium
+
+
+
+        k <- k + 1
+
+
+
+        rs_client$refresh()
+
+        captcha <- rs_client$findElements(using = "id", value = "gs_captcha_c")
+
+
+
+        ### Prevent infinite loop                                             ----------
+
+
+
+        if (k > 10) {
+
+          usethis::ui_stop(
+            stick("You have been permanently banned from Google Scholar")
           )
         }
 
-        rs_client <- rs_driver$client
+      }  # e_o while openvpn
+    } # e_o while ban
+
+    k <- 1
+
+    
+
+    ### Get Total Matches                                                       ----------
+
+
+
+    if (!nrow(gs_results)) {
+
+      n_matches <- rs_client$findElement(using = "id", value = "gs_ab_md")
+
+      total <- n_matches$getElementText()[[1]]
+      total <- gsub("\\(.+\\)|About|results|result|[[:space:]]|[[:punct:]]", "", total)
+      total <- as.numeric(total)
+      total <- ifelse(is.na(total), 0, total)
+
+      if (total == 0) {
+
+        end_of <- TRUE
+
+      } else {
+
+        end_of <- FALSE
       }
 
-      rs_client$navigate(url)
-      session <- rs_client$getPageSource()[[1]]
-    }
-
-    session <- xml2::read_html(session)
-
-
-    ### Extract METADATA                                                        ----------
-
-    if (length(html_nodes(session, ".gs_ri"))) {
-
-      if (!nrow(gs_results)) {
-
-        total <- html_text(html_nodes(session, "#gs_ab_md"))
-        total <- gsub("\\(.+\\)|About|results|result|[[:space:]]|[[:punct:]]", "", total)
-        total <- as.numeric(total)
-      }
-
-      if (verbose && display) {
+      if (verbose) {
 
         cli::cat_line()
         cli::cat_line(crayon::underline("Response details"))
@@ -819,16 +880,60 @@ scrap_gscholar <- function(
             )
           }
 
-          cli::cat_line()
-          cli::cat_line(crayon::underline("Metadata extraction"))
-
-        } else {
-
-          cli::cat_line()
-          cli::cat_line(crayon::underline("No metadata extraction"))
         }
-        display <- FALSE
       }
+    }
+
+
+
+    if (!end_of) { # Results found
+
+
+
+      ### Store HTML code source                                                ----------
+
+
+
+      session  <- rs_client$getPageSource()[[1]]
+
+
+
+      if (keep_html) {
+
+        filename <- paste0(
+          tolower(gsub("%20", "_", search_terms)),
+          "_",
+          format(Sys.time(), "%y%m%d%H%M%S")
+        )
+
+        dir.create(
+          file.path(
+            output_path,
+            tolower(gsub("%20", "_", search_terms)),
+            "html"
+          ),
+          showWarnings = FALSE,
+          recursive    = TRUE
+        )
+
+        cat(
+          session,
+          file = file.path(
+            output_path,
+            tolower(gsub("%20", "_", search_terms)),
+            "html",
+            paste0(filename, ".html")
+          )
+        )
+      }
+
+
+
+      ### Extract METADATA                                                        ----------
+
+
+
+      session <- xml2::read_html(session)
 
 
       if (metadata) {
@@ -876,102 +981,123 @@ scrap_gscholar <- function(
 
 
         gs_infos <- data.frame(
-          query    = search_terms,
+          query    = tolower(gsub("%20", "_", search_terms)),
+          period   = ifelse(
+            years[1] == "",
+            NA,
+            paste(unique(c(years[1], years[2])), collapse = "-")
+          ),
           title    = gs_titles,
           infos    = gs_infos,
           citation = gs_citations,
           links    = gs_links
         )
 
+        gs_results <- rbind(gs_results, gs_infos)
+
       } else {
 
-        gs_infos <- data.frame()
+        gs_infos   <- data.frame()
+        gs_results <- rbind(gs_results, gs_infos)
       }
 
-    } else {
-
-      total    <- 0
-      gs_infos <- data.frame()
-
-    }
-
-    gs_results <- rbind(gs_results, gs_infos)
 
 
-    if (verbose) {
+      if (verbose) {
 
-      cat(
-        paste0(
-          "\r",
-          "   Scraping references ",
-          nrow(gs_results),
-          " on ",
-          total,
-          "..."
+        cat(
+          paste0(
+            "\r",
+            "   Scraping references ",
+            nrow(gs_results),
+            " on ",
+            total,
+            "..."
+          )
         )
-      )
-    }
+      }
 
 
-    ### Check for next pages                                                    ----------
 
-    if (!length(gs_results)) {
+      ### Check for next pages                                                  ----------
 
-      next_btn <- NULL
 
-    } else {
 
-      if (is.null(n_max)) {
+      if (!length(gs_results)) {
 
-        pages <- html_table(session)[[1]]
-        pages <- as.character(pages[1, ])
-        pages <- as.numeric(pages[which(!(pages %in% c("Previous", "Next")))])
-
-        page <- (start / 10) + 1
-
-        if (sum(pages > page) > 0) {
-
-          start <- start + 10
-
-        } else {
-
-          next_btn <- NULL
-        }
+        next_btn <- NULL
 
       } else {
 
-        if (nrow(gs_results) < n_max) {
+        if (is.null(n_max)) {
 
-          pages <- html_table(session)[[1]]
-          pages <- as.character(pages[1, ])
-          pages <- as.numeric(pages[which(!(pages %in% c("Previous", "Next")))])
+          pages <- html_table(session)
 
-          page <- (start / 10) + 1
+          if (!length(pages)) {
 
-          if (sum(pages > page) > 0) {
-
-            start <- start + 10
+            next_btn <- NULL
 
           } else {
 
-            next_btn <- NULL
+            pages <- pages[[1]]
+            pages <- as.character(pages[1, ])
+            pages <- as.numeric(pages[which(!(pages %in% c("Previous", "Next")))])
+
+            page  <- (start / 10) + 1
+
+            if (sum(pages > page) > 0) {
+
+              start <- start + 10
+
+            } else {
+
+              next_btn <- NULL
+
+            }
           }
 
         } else {
 
-          gs_results <- gs_results[1:n_max, ]
-          next_btn <- NULL
+          if (nrow(gs_results) < n_max) {
+
+            pages <- html_table(session)
+
+            if (!length(pages)) {
+
+              next_btn <- NULL
+
+            } else {
+
+              pages <- pages[[1]]
+              pages <- as.character(pages[1, ])
+              pages <- as.numeric(pages[which(!(pages %in% c("Previous", "Next")))])
+
+              page  <- (start / 10) + 1
+
+              if (sum(pages > page) > 0) {
+
+                start <- start + 10
+
+              } else {
+
+                next_btn <- NULL
+              }
+            }
+
+          } else {
+
+            gs_results <- gs_results[1:n_max, ]
+            next_btn <- NULL
+          }
         }
-      }
-    }
-  }
+      } # e_o next page
+    } # no_results
+  } # e_o while url
 
 
-  if (selenium) {
 
-    rs_client$close()
-    invisible(rs_driver$server$stop())
-  }
+  rs_client$close()
+  invisible(rs_driver$server$stop())
 
   if (openvpn) {
 
@@ -985,15 +1111,32 @@ scrap_gscholar <- function(
     close_vpn(verbose)
   }
 
+
+
   cli::cat_line()
   cli::cat_rule(right = "done.", col = "darkgrey")
 
-  if (metadata) {
 
-    return(gs_results)
+  dir.create(
+    file.path(
+      output_path,
+      tolower(gsub("%20", "_", search_terms)),
+      "data"
+    ),
+    showWarnings = FALSE,
+    recursive    = TRUE
+  )
 
-  } else {
+  save(
+    gs_results,
+    file = file.path(
+      output_path,
+      tolower(gsub("%20", "_", search_terms)),
+      "data",
+      paste0(filename)
+    )
+  )
 
-    return(total)
-  }
+  return(gs_results)
+
 }

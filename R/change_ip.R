@@ -165,47 +165,50 @@ change_ip <- function(
     }
   }
 
+  fail <- TRUE
 
-  config_file <- sample(config_files, 1)
+  while (fail) {
 
-  invisible(
-    system(
-      paste(
-        "echo",
-        paste0("'", unix_password(), "'"),
-        "| sudo -S killall openvpn"
-      ),
-      ignore.stderr = TRUE
-    )
-  )
+    config_file <- sample(config_files, 1)
 
-  invisible(
-    system(
-      paste(
-        "echo",
-        paste0("'", unix_password(), "'"),
-        "| sudo -S openvpn --config",
-        file.path(config_path, config_file),
-        "--daemon --auth-nocache"
-      ),
-      ignore.stderr = TRUE
-    )
-  )
-
-  Sys.sleep(5)
-
-  ip <- get_ip()
-
-  if (ip == exposed_ip) {
-
-    usethis::ui_stop(
-      stick(
-        "
-          Unable to reach the
-          {usethis::ui_value('VPN server')}
-        "
+    invisible(
+      system(
+        paste(
+          "echo",
+          paste0("'", unix_password(), "'"),
+          "| sudo -S killall openvpn"
+        ),
+        ignore.stderr = TRUE
       )
     )
+
+    Sys.sleep(10)
+
+    invisible(
+      system(
+        paste(
+          "echo",
+          paste0("'", unix_password(), "'"),
+          "| sudo -S openvpn --config",
+          file.path(config_path, config_file),
+          "--daemon --auth-nocache"
+        ),
+        ignore.stderr = TRUE
+      )
+    )
+
+    Sys.sleep(5)
+
+    ip <- get_ip()
+
+    if (ip == exposed_ip) {
+
+      Sys.sleep(20)
+
+    } else {
+
+      fail <- FALSE
+    }
   }
 
   if (verbose) {

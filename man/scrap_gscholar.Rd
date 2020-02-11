@@ -18,14 +18,15 @@ scrap_gscholar(
   n_max = NULL,
   include_patents = FALSE,
   include_citations = FALSE,
-  selenium = FALSE,
   port = 4567L,
   openvpn = TRUE,
   config_path = "~/.ovpn",
   ovpn_country,
   agent = TRUE,
   sleep = 1,
-  verbose = TRUE
+  verbose = TRUE,
+  keep_html = FALSE,
+  output_path = "."
 )
 }
 \arguments{
@@ -39,7 +40,7 @@ scrap_gscholar(
 
 \item{search_source}{A character vector of publication sources to search for.}
 
-\item{metadata}{...}
+\item{metadata}{A boolean. If TRUE, all publications data are extracted. Otherwise, only the total number of publications is returned.}
 
 \item{where}{Search in the whole document ('any') or only in the title ('title').}
 
@@ -55,8 +56,6 @@ scrap_gscholar(
 
 \item{include_citations}{A boolean. If TRUE, citations are included in the search results.}
 
-\item{selenium}{A boolean. If TRUE, webscraping is performed with the Selenium technology.}
-
 \item{port}{The port number to run on Selenium server.}
 
 \item{openvpn}{A boolean. If TRUE, public IP address will be randomly changed.}
@@ -70,6 +69,10 @@ scrap_gscholar(
 \item{sleep}{The time interval (in seconds) between two sub-requests.}
 
 \item{verbose}{A boolean. If TRUE, connexion and webscraping informations are printing.}
+
+\item{keep_html}{A boolean. If TRUE, HTML pages are kept.}
+
+\item{output_path}{The path to the folder to save data.}
 }
 \value{
 A 7-columns data frame with:
