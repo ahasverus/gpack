@@ -1091,7 +1091,13 @@ scrap_gscholar <- function(
           }
         }
       } # e_o next page
+
+    } else {
+
+      next_btn <- NULL
+
     } # no_results
+
   } # e_o while url
 
 
@@ -1115,6 +1121,7 @@ scrap_gscholar <- function(
 
   cli::cat_line()
   cli::cat_rule(right = "done.", col = "darkgrey")
+
 
 
   dir.create(
