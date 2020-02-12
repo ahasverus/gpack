@@ -670,6 +670,14 @@ scrap_gscholar <- function(
 
 
 
+    filename <- paste0(
+      tolower(gsub("%20", "_", search_terms)),
+      "_",
+      format(Sys.time(), "%y%m%d%H%M%S")
+    )
+
+
+
     Sys.sleep(sleep)
 
 
@@ -899,12 +907,6 @@ scrap_gscholar <- function(
 
 
       if (keep_html) {
-
-        filename <- paste0(
-          tolower(gsub("%20", "_", search_terms)),
-          "_",
-          format(Sys.time(), "%y%m%d%H%M%S")
-        )
 
         dir.create(
           file.path(
