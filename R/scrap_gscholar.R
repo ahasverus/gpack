@@ -699,6 +699,12 @@ scrap_gscholar <- function(
     k       <- 1
     captcha <- rs_driver$client$findElements(using = "id", value = "gs_captcha_c")
 
+    if (!length(captcha)) {
+
+      captcha <- rs_driver$client$findElements(using = "id", value = "recaptcha")
+
+    }
+
 
 
     while (length(captcha)) {
@@ -786,6 +792,12 @@ scrap_gscholar <- function(
         rs_driver$client$refresh()
 
         captcha <- rs_driver$client$findElements(using = "id", value = "gs_captcha_c")
+
+        if (!length(captcha)) {
+
+          captcha <- rs_driver$client$findElements(using = "id", value = "recaptcha")
+
+        }
 
 
 
