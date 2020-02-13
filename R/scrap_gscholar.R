@@ -614,8 +614,6 @@ scrap_gscholar <- function(
   #   )
   # }
 
-  rs_client <- rs_driver$client
-
 
   next_btn   <- vector("list", 1)        # Next Page Button (used in while loop)
   gs_results <- data.frame()             # Results Storage
@@ -690,7 +688,7 @@ scrap_gscholar <- function(
 
 
 
-    rs_driver$rs_client$navigate(url)
+    rs_driver$client$navigate(url)
 
 
 
@@ -699,7 +697,7 @@ scrap_gscholar <- function(
 
 
     k       <- 1
-    captcha <- rs_driver$rs_client$findElements(using = "id", value = "gs_captcha_c")
+    captcha <- rs_driver$client$findElements(using = "id", value = "gs_captcha_c")
 
 
 
@@ -769,13 +767,13 @@ scrap_gscholar <- function(
 
         if (k == 5) {
 
-          rs_driver$rs_client$closeWindow()
+          rs_driver$client$closeWindow()
 
           Sys.sleep(2)
 
-          rs_driver$rs_client$open(silent = TRUE)
+          rs_driver$client$open(silent = TRUE)
 
-          rs_driver$rs_client$navigate(url)
+          rs_driver$client$navigate(url)
 
         }  # e_o if rselenium
 
@@ -785,9 +783,9 @@ scrap_gscholar <- function(
 
 
 
-        rs_driver$rs_client$refresh()
+        rs_driver$client$refresh()
 
-        captcha <- rs_driver$rs_client$findElements(using = "id", value = "gs_captcha_c")
+        captcha <- rs_driver$client$findElements(using = "id", value = "gs_captcha_c")
 
 
 
@@ -815,7 +813,7 @@ scrap_gscholar <- function(
 
     if (!nrow(gs_results)) {
 
-      n_matches <- rs_driver$rs_client$findElement(using = "id", value = "gs_ab_md")
+      n_matches <- rs_driver$client$findElement(using = "id", value = "gs_ab_md")
 
       total <- n_matches$getElementText()[[1]]
       total <- gsub("\\(.+\\)|About|results|result|[[:space:]]|[[:punct:]]", "", total)
@@ -883,7 +881,7 @@ scrap_gscholar <- function(
 
 
 
-      session  <- rs_driver$rs_client$getPageSource()[[1]]
+      session  <- rs_driver$client$getPageSource()[[1]]
 
 
 
@@ -1085,7 +1083,7 @@ scrap_gscholar <- function(
 
 
 
-  rs_driver$rs_client$closeWindow()
+  rs_driver$client$closeWindow()
 
   # if (openvpn) {
   #
