@@ -31,6 +31,8 @@
 #' @param verbose A boolean. If TRUE, connexion and webscraping informations are printing.
 #' @param keep_html A boolean. If TRUE, HTML pages are kept.
 #' @param output_path The path to the folder to save data.
+#' @param exposed_ip The unprotected IPv4 address.
+#' @param rs_driver An RSelenium server.
 #'
 #' @return A 7-columns data frame with:
 #'   - query: the query terms
@@ -63,9 +65,9 @@ scrap_gscholar <- function(
   search_terms, exact = TRUE, exclude_terms = NULL, search_author = NULL,
   search_source = NULL, metadata = FALSE, where = NULL, years = NULL,
   lang = NULL, start = 0, n_max = NULL, include_patents = FALSE,
-  include_citations = FALSE, port = 4567L, openvpn = TRUE,
+  include_citations = FALSE, rs_driver, port = 4567L, openvpn = TRUE,
   config_path = "~/.ovpn", ovpn_country, agent = TRUE, sleep = 1,
-  verbose = TRUE, keep_html = FALSE, output_path = "."
+  verbose = TRUE, keep_html = FALSE, output_path = ".", exposed_ip = NULL
 ) {
 
 
@@ -514,58 +516,58 @@ scrap_gscholar <- function(
 
 
 
-  if (openvpn) {
-
-    if (verbose) {
-
-      cli::cat_line()
-      cli::cat_line(crayon::underline("Activating VPN protection"))
-    }
-
-    close_vpn(verbose = FALSE)
-    exposed_ip  <- get_ip()
-
-    usethis::ui_info(
-      stick(
-        paste0(
-          "Unprotected public IP address: ",
-          usethis::ui_value(get_ip())
-        ),
-        indent = " "
-      )
-    )
-
-    vpn_servers <- change_ip(
-      config_path  = config_path,
-      exposed_ip   = exposed_ip,
-      country      = ovpn_country,
-      ignore_files = NULL,
-      verbose      = verbose
-    )
-
-  } else {
-
-    if (verbose) {
-
-      cli::cat_line()
-      cli::cat_line(crayon::underline("No VPN protection"))
-      usethis::ui_info(
-        stick(
-          "You'll probably get blocked by Google Scholar",
-          indent = " "
-        )
-      )
-      usethis::ui_info(
-        stick(
-          paste0(
-            "Unprotected public IP address: ",
-            usethis::ui_value(get_ip())
-          ),
-          indent = " "
-        )
-      )
-    }
-  }
+  # if (openvpn) {
+  #
+  #   if (verbose) {
+  #
+  #     cli::cat_line()
+  #     cli::cat_line(crayon::underline("Activating VPN protection"))
+  #   }
+  #
+  #   close_vpn(verbose = FALSE)
+  #   exposed_ip  <- get_ip()
+  #
+  #   usethis::ui_info(
+  #     stick(
+  #       paste0(
+  #         "Unprotected public IP address: ",
+  #         usethis::ui_value(get_ip())
+  #       ),
+  #       indent = " "
+  #     )
+  #   )
+  #
+  #   vpn_servers <- change_ip(
+  #     config_path  = config_path,
+  #     exposed_ip   = exposed_ip,
+  #     country      = ovpn_country,
+  #     ignore_files = NULL,
+  #     verbose      = verbose
+  #   )
+  #
+  # } else {
+  #
+  #   if (verbose) {
+  #
+  #     cli::cat_line()
+  #     cli::cat_line(crayon::underline("No VPN protection"))
+  #     usethis::ui_info(
+  #       stick(
+  #         "You'll probably get blocked by Google Scholar",
+  #         indent = " "
+  #       )
+  #     )
+  #     usethis::ui_info(
+  #       stick(
+  #         paste0(
+  #           "Unprotected public IP address: ",
+  #           usethis::ui_value(get_ip())
+  #         ),
+  #         indent = " "
+  #       )
+  #     )
+  #   }
+  # }
 
 
 
@@ -573,14 +575,14 @@ scrap_gscholar <- function(
 
 
 
-  if (agent) {
-
-    if (verbose) {
-      cli::cat_line()
-      cli::cat_line(crayon::underline("Changing user-agent"))
-    }
-    uagent <- change_ua(verbose = verbose)
-  }
+  # if (agent) {
+  #
+  #   if (verbose) {
+  #     cli::cat_line()
+  #     cli::cat_line(crayon::underline("Changing user-agent"))
+  #   }
+  #   uagent <- change_ua(verbose = verbose)
+  # }
 
 
 
@@ -588,27 +590,29 @@ scrap_gscholar <- function(
 
 
 
-  if (agent) {
-
-    rs_driver <- rsDriver(
-      port              = port,
-      browser           = "firefox",
-      verbose           = FALSE,
-      extraCapabilities = makeFirefoxProfile(
-        list(
-          general.useragent.override = uagent
-        )
-      )
-    )
-
-  } else {
-
-    rs_driver <- rsDriver(
-      port    = port,
-      browser = "firefox",
-      verbose = FALSE
-    )
-  }
+  # if (agent) {
+  #
+  #   rs_driver <- rsDriver(
+  #     port              = port,
+  #     browser           = "firefox",
+  #     verbose           = FALSE,
+  #     extraCapabilities = makeFirefoxProfile(
+  #       list(
+  #         general.useragent.override = uagent
+  #       )
+  #     ),
+  #     check             = FALSE
+  #   )
+  #
+  # } else {
+  #
+  #   rs_driver <- rsDriver(
+  #     port    = port,
+  #     browser = "firefox",
+  #     verbose = FALSE,
+  #     check   = FALSE
+  #   )
+  # }
 
   rs_client <- rs_driver$client
 
@@ -686,7 +690,7 @@ scrap_gscholar <- function(
 
 
 
-    rs_client$navigate(url)
+    rs_driver$rs_client$navigate(url)
 
 
 
@@ -695,7 +699,7 @@ scrap_gscholar <- function(
 
 
     k       <- 1
-    captcha <- rs_client$findElements(using = "id", value = "gs_captcha_c")
+    captcha <- rs_driver$rs_client$findElements(using = "id", value = "gs_captcha_c")
 
 
 
@@ -747,13 +751,12 @@ scrap_gscholar <- function(
 
         close_vpn(verbose = FALSE)
 
-        vpn_servers <- c(
-          vpn_servers,
+        invisible(
           change_ip(
             config_path  = config_path,
             exposed_ip   = exposed_ip,
             country      = ovpn_country,
-            ignore_files = vpn_servers,
+            ignore_files = NULL,
             verbose      = verbose
           )
         )
@@ -766,35 +769,13 @@ scrap_gscholar <- function(
 
         if (k == 5) {
 
-          rs_client$close()
-          invisible(rs_driver$server$stop())
+          rs_driver$rs_client$closeWindow()
 
-          Sys.sleep(sleep)
+          Sys.sleep(2)
 
-          if (agent) {
+          rs_driver$rs_client$open(silent = TRUE)
 
-            rs_driver <- rsDriver(
-              port              = port,
-              browser           = "firefox",
-              verbose           = FALSE,
-              extraCapabilities = makeFirefoxProfile(
-                list(
-                  general.useragent.override = change_ua(verbose)
-                )
-              )
-            )
-
-          } else {
-
-            rs_driver <- rsDriver(
-              port    = port,
-              browser = "firefox",
-              verbose = FALSE
-            )
-          }
-
-          rs_client <- rs_driver$client
-          rs_client$navigate(url)
+          rs_driver$rs_client$navigate(url)
 
         }  # e_o if rselenium
 
@@ -804,9 +785,9 @@ scrap_gscholar <- function(
 
 
 
-        rs_client$refresh()
+        rs_driver$rs_client$refresh()
 
-        captcha <- rs_client$findElements(using = "id", value = "gs_captcha_c")
+        captcha <- rs_driver$rs_client$findElements(using = "id", value = "gs_captcha_c")
 
 
 
@@ -826,7 +807,7 @@ scrap_gscholar <- function(
 
     k <- 1
 
-    
+
 
     ### Get Total Matches                                                       ----------
 
@@ -834,7 +815,7 @@ scrap_gscholar <- function(
 
     if (!nrow(gs_results)) {
 
-      n_matches <- rs_client$findElement(using = "id", value = "gs_ab_md")
+      n_matches <- rs_driver$rs_client$findElement(using = "id", value = "gs_ab_md")
 
       total <- n_matches$getElementText()[[1]]
       total <- gsub("\\(.+\\)|About|results|result|[[:space:]]|[[:punct:]]", "", total)
@@ -902,7 +883,7 @@ scrap_gscholar <- function(
 
 
 
-      session  <- rs_client$getPageSource()[[1]]
+      session  <- rs_driver$rs_client$getPageSource()[[1]]
 
 
 
@@ -1104,20 +1085,19 @@ scrap_gscholar <- function(
 
 
 
-  rs_client$close()
-  invisible(rs_driver$server$stop())
+  rs_driver$rs_client$closeWindow()
 
-  if (openvpn) {
-
-    if (verbose) {
-
-      cli::cat_line()
-      cli::cat_line()
-      cli::cat_line(crayon::underline("Stopping VPN protection"))
-    }
-
-    close_vpn(verbose)
-  }
+  # if (openvpn) {
+  #
+  #   if (verbose) {
+  #
+  #     cli::cat_line()
+  #     cli::cat_line()
+  #     cli::cat_line(crayon::underline("Stopping VPN protection"))
+  #   }
+  #
+  #   close_vpn(verbose)
+  # }
 
 
 
@@ -1146,6 +1126,6 @@ scrap_gscholar <- function(
     )
   )
 
-  return(gs_results)
+  return(rs_driver)
 
 }

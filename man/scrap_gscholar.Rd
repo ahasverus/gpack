@@ -4,30 +4,13 @@
 \alias{scrap_gscholar}
 \title{Retrieve Data from Google Scholar}
 \usage{
-scrap_gscholar(
-  search_terms,
-  exact = TRUE,
-  exclude_terms = NULL,
-  search_author = NULL,
-  search_source = NULL,
-  metadata = FALSE,
-  where = NULL,
-  years = NULL,
-  lang = NULL,
-  start = 0,
-  n_max = NULL,
-  include_patents = FALSE,
-  include_citations = FALSE,
-  port = 4567L,
-  openvpn = TRUE,
-  config_path = "~/.ovpn",
-  ovpn_country,
-  agent = TRUE,
-  sleep = 1,
-  verbose = TRUE,
-  keep_html = FALSE,
-  output_path = "."
-)
+scrap_gscholar(search_terms, exact = TRUE, exclude_terms = NULL,
+  search_author = NULL, search_source = NULL, metadata = FALSE,
+  where = NULL, years = NULL, lang = NULL, start = 0,
+  n_max = NULL, include_patents = FALSE, include_citations = FALSE,
+  rs_driver, port = 4567L, openvpn = TRUE, config_path = "~/.ovpn",
+  ovpn_country, agent = TRUE, sleep = 1, verbose = TRUE,
+  keep_html = FALSE, output_path = ".", exposed_ip = NULL)
 }
 \arguments{
 \item{search_terms}{A character vector of terms to search publications for.}
@@ -56,6 +39,8 @@ scrap_gscholar(
 
 \item{include_citations}{A boolean. If TRUE, citations are included in the search results.}
 
+\item{rs_driver}{An RSelenium server.}
+
 \item{port}{The port number to run on Selenium server.}
 
 \item{openvpn}{A boolean. If TRUE, public IP address will be randomly changed.}
@@ -73,6 +58,8 @@ scrap_gscholar(
 \item{keep_html}{A boolean. If TRUE, HTML pages are kept.}
 
 \item{output_path}{The path to the folder to save data.}
+
+\item{exposed_ip}{The unprotected IPv4 address.}
 }
 \value{
 A 7-columns data frame with:

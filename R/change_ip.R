@@ -165,9 +165,9 @@ change_ip <- function(
     }
   }
 
-  fail <- TRUE
+  #fail <- TRUE
 
-  while (fail) {
+  #while (fail) {
 
     config_file <- sample(config_files, 1)
 
@@ -182,7 +182,7 @@ change_ip <- function(
       )
     )
 
-    Sys.sleep(10)
+    Sys.sleep(5)
 
     invisible(
       system(
@@ -199,17 +199,17 @@ change_ip <- function(
 
     Sys.sleep(5)
 
-    ip <- get_ip()
+  #  ip <- get_ip()
 
-    if (ip == exposed_ip) {
+  #  if (ip == exposed_ip) {
 
-      Sys.sleep(20)
+  #    Sys.sleep(20)
 
-    } else {
+  #  } else {
 
-      fail <- FALSE
-    }
-  }
+  #    fail <- FALSE
+  #  }
+  #}
 
   if (verbose) {
 
@@ -218,14 +218,27 @@ change_ip <- function(
 
 
 
+#    usethis::ui_done(
+#      stick(
+#        paste0(
+#          "New public IP address: ",
+#          usethis::ui_value(ip),
+#          " (",
+#          usethis::ui_field(country),
+#          ")"
+#        ),
+#        indent = " "
+#      )
+#    )
+    
     usethis::ui_done(
       stick(
         paste0(
-          "New public IP address: ",
-          usethis::ui_value(ip),
-          " (",
-          usethis::ui_field(country),
-          ")"
+          "New location: ",
+#          usethis::ui_value(ip),
+#          " (",
+          usethis::ui_field(country)#,
+#          ")"
         ),
         indent = " "
       )

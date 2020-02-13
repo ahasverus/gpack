@@ -4,13 +4,8 @@
 \alias{change_ip}
 \title{Run OpenVPN and Change IP Address}
 \usage{
-change_ip(
-  config_path = "~/.ovpn",
-  exposed_ip,
-  country,
-  ignore_files = NULL,
-  verbose = TRUE
-)
+change_ip(config_path = "~/.ovpn", exposed_ip, country,
+  ignore_files = NULL, verbose = TRUE)
 }
 \arguments{
 \item{config_path}{The path to the folder containing server configuration files.}
