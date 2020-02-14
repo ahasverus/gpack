@@ -707,7 +707,7 @@ scrap_gscholar <- function(
 
     if (!length(captcha)) {
 
-      captcha <- rs_driver$client$findElements(using = "tag", value = "div")
+      captcha <- rs_driver$client$findElement(using = "tag", value = "div")
       captcha <- grep("robot|captcha|ip", tolower(captcha$getElementText()))
     }
 
@@ -807,7 +807,7 @@ scrap_gscholar <- function(
 
         if (!length(captcha)) {
 
-          captcha <- rs_driver$client$findElements(using = "tag", value = "div")
+          captcha <- rs_driver$client$findElement(using = "tag", value = "div")
           captcha <- grep("robot|captcha|ip", tolower(captcha$getElementText()))
 
         }
