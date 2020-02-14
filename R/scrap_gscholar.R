@@ -773,26 +773,16 @@ scrap_gscholar <- function(
 
 
 
-        ### Relaunch RSelenium server                                         ----------
+        rs_driver$client$closeWindow()
 
+        Sys.sleep(2)
 
+        rs_driver$client$open(silent = TRUE)
 
-        if (k == 5) {
-
-          rs_driver$client$closeWindow()
-
-          Sys.sleep(2)
-
-          rs_driver$client$open(silent = TRUE)
-
-          rs_driver$client$navigate(url)
-
-        }  # e_o if rselenium
-
+        rs_driver$client$navigate(url)
 
 
         k <- k + 1
-
 
 
         rs_driver$client$refresh()
