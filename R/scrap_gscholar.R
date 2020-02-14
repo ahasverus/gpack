@@ -705,6 +705,12 @@ scrap_gscholar <- function(
 
     }
 
+    if (!length(captcha)) {
+
+      captcha <- rs_driver$client$findElements(using = "tag", value = "div")
+      captcha <- grep("robot|captcha|ip", tolower(captcha$getElementText()))
+    }
+
 
 
     while (length(captcha)) {
@@ -796,6 +802,13 @@ scrap_gscholar <- function(
         if (!length(captcha)) {
 
           captcha <- rs_driver$client$findElements(using = "id", value = "recaptcha")
+
+        }
+
+        if (!length(captcha)) {
+
+          captcha <- rs_driver$client$findElements(using = "tag", value = "div")
+          captcha <- grep("robot|captcha|ip", tolower(captcha$getElementText()))
 
         }
 
