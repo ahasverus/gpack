@@ -34,14 +34,7 @@
 #' @param exposed_ip The unprotected IPv4 address.
 #' @param rs_driver An RSelenium server.
 #'
-#' @return A 7-columns data frame with:
-#'   - query: the query terms
-#'   - gsid: the publication Google Scholar ID
-#'   - title: the publication title
-#'   - authors: the publication authors
-#'   - source: the publication source
-#'   - year: the publication year
-#'   - citation: the number of citations of the publication
+#' @return The RSelenium server
 #'
 #' @import RSelenium
 #' @import xml2
