@@ -459,6 +459,7 @@ scrap_gimages <- function(
     ### Go to original image                                                    ----------
 
 
+    Sys.sleep(.5)
 
     thumb_links[[k]]$clickElement()
 
@@ -479,7 +480,11 @@ scrap_gimages <- function(
     )
 
     img_link <- img_link[grep("^http", img_link)]
-    img_link <- img_link[-grep("encrypted-tbn0", img_link)]
+    
+    pos <- grep("encrypted-tbn0", img_link)
+    if (length(pos)) {
+      img_link <- img_link[-pos] 
+    }
 
 
 
