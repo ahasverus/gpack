@@ -528,7 +528,7 @@ scrap_gimages <- function(
     )
   }
 
-  save(gi_results, file.path(output_path, paste0(format(Sys.time(), "%Y%m%d%H%M"), ".rda")))
+  save(gi_results, file = file.path(output_path, paste0(format(Sys.time(), "%Y%m%d%H%M"), ".rda")))
 
   rs_driver$client$closeWindow()
 
