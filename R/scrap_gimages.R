@@ -451,7 +451,7 @@ scrap_gimages <- function(
   count    <- 0
 
   gi_results <- data.frame()
-  
+
   for (k in 1:length(thumb_links)) {
 
 
@@ -480,10 +480,10 @@ scrap_gimages <- function(
     )
 
     img_link <- img_link[grep("^http", img_link)]
-    
+
     pos <- grep("encrypted-tbn0", img_link)
     if (length(pos)) {
-      img_link <- img_link[-pos] 
+      img_link <- img_link[-pos]
     }
 
 
@@ -492,21 +492,21 @@ scrap_gimages <- function(
 
     Sys.sleep(.5)
 
-    # attempt <- tryCatch({
-    #   utils::download.file(
-    #     url       = img_link,
-    #     destfile  = file.path(output_path, paste0("IMG", photo_id, ".jpg")),
-    #     quiet     = TRUE
-    #   )},
-    #   error = function(e){}
-    # )
-    # 
-    # if (!is.null(attempt)) {
-    # 
-    #   count    <- count + 1
-    #   photo_id <- photo_id + 1
-    # }
-    
+    attempt <- tryCatch({
+      utils::download.file(
+        url       = img_link,
+        destfile  = file.path(output_path, paste0("IMG", photo_id, ".jpg")),
+        quiet     = TRUE
+      )},
+      error = function(e){}
+    )
+
+    if (!is.null(attempt)) {
+
+      count    <- count + 1
+      photo_id <- photo_id + 1
+    }
+
     dat <- data.frame(
       species = strsplit(output_path, "/")[[1]][length(strsplit(output_path, "/")[[1]])],
       query   = search_terms,
@@ -515,18 +515,18 @@ scrap_gimages <- function(
     gi_results <- rbind(gi_results, dat)
   }
 
-  # if (verbose) {
-  # 
-  #   usethis::ui_info(
-  #     stick(
-  #       "
-  #         Images successfully downloaded:
-  #         {usethis::ui_value(paste0(count, \" on \", length(thumb_links)))}
-  #       ",
-  #       indent = " "
-  #     )
-  #   )
-  # }
+  if (verbose) {
+
+    usethis::ui_info(
+      stick(
+        "
+          Images successfully downloaded:
+          {usethis::ui_value(paste0(count, \" on \", length(thumb_links)))}
+        ",
+        indent = " "
+      )
+    )
+  }
 
   save(gi_results, file.path(output_path, paste0(format(Sys.time(), "%Y%m%d%H%M"), ".rda")))
 
