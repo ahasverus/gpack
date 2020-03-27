@@ -929,60 +929,68 @@ scrap_gscholar <- function(
 
         gs_blocks <- html_nodes(session, ".gs_ri")
 
-
-        gs_titles <- html_text(html_nodes(gs_blocks, "h3"))
-        gs_titles <- gsub("\\[[[:alpha:]]+\\]", "", gs_titles)
-        gs_titles <- gsub("^[[:space:]]|[[:space:]]$", "", gs_titles)
+        if (length(gs_blocks)) {
 
 
-        gs_citations <- html_nodes(gs_blocks, ".gs_fl")
+          gs_titles <- html_text(html_nodes(gs_blocks, "h3"))
+          gs_titles <- gsub("\\[[[:alpha:]]+\\]", "", gs_titles)
+          gs_titles <- gsub("^[[:space:]]|[[:space:]]$", "", gs_titles)
 
-        gs_citations <- unlist(
-          lapply(
-            gs_citations,
-            function(x) {
-              x <- html_nodes(x, "a")
-              x <- html_text(x)
-              pos <- grep("Cited by", x)
-              if (length(pos)) {
-                return(as.numeric(gsub("Cited by", "",  x[pos])))
-              } else {
-                return(0)
+
+          gs_citations <- html_nodes(gs_blocks, ".gs_fl")
+
+          gs_citations <- unlist(
+            lapply(
+              gs_citations,
+              function(x) {
+                x <- html_nodes(x, "a")
+                x <- html_text(x)
+                pos <- grep("Cited by", x)
+                if (length(pos)) {
+                  return(as.numeric(gsub("Cited by", "",  x[pos])))
+                } else {
+                  return(0)
+                }
               }
-            }
+            )
           )
-        )
 
 
-        gs_infos <- html_text(html_nodes(gs_blocks, ".gs_a"))
+          gs_infos <- html_text(html_nodes(gs_blocks, ".gs_a"))
 
 
-        gs_links <- unlist(
-          lapply(
-            gs_blocks,
-            function(x) {
-              x <- html_nodes(x, "h3")
-              x <- html_nodes(x, "a")
-              return(html_attr(x, "href"))
-            }
+          gs_links <- unlist(
+            lapply(
+              gs_blocks,
+              function(x) {
+                x <- html_nodes(x, "h3")
+                x <- html_nodes(x, "a")
+                return(html_attr(x, "href"))
+              }
+            )
           )
-        )
 
 
-        gs_infos <- data.frame(
-          query    = tolower(gsub("%20", "_", search_terms)),
-          period   = ifelse(
-            years[1] == "",
-            NA,
-            paste(unique(c(years[1], years[2])), collapse = "-")
-          ),
-          title    = gs_titles,
-          infos    = gs_infos,
-          citation = gs_citations,
-          links    = gs_links
-        )
+          gs_infos <- data.frame(
+            query    = tolower(gsub("%20", "_", search_terms)),
+            period   = ifelse(
+              years[1] == "",
+              NA,
+              paste(unique(c(years[1], years[2])), collapse = "-")
+            ),
+            title    = gs_titles,
+            infos    = gs_infos,
+            citation = gs_citations,
+            links    = gs_links
+          )
 
-        gs_results <- rbind(gs_results, gs_infos)
+          gs_results <- rbind(gs_results, gs_infos)
+
+        } else {
+
+          gs_infos   <- data.frame()
+          gs_results <- rbind(gs_results, gs_infos)
+        }
 
       } else {
 
@@ -1012,7 +1020,7 @@ scrap_gscholar <- function(
 
 
 
-      if (!length(gs_results)) {
+      if (!length(gs_infos)) {
 
         next_btn <- NULL
 
