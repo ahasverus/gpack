@@ -499,18 +499,21 @@ scrap_gimages <- function(
     #   error = function(e){}
     # )
 
-    if (!is.null(attempt)) {
+    #if (!is.null(attempt)) {
 
       count    <- count + 1
       photo_id <- photo_id + 1
-    }
+    #}
 
-    dat <- data.frame(
-      species = strsplit(output_path, "/")[[1]][length(strsplit(output_path, "/")[[1]])],
-      query   = search_terms,
-      url     = img_link
-    )
-    gi_results <- rbind(gi_results, dat)
+    if (length(img_link)) {
+
+      dat <- data.frame(
+        species = strsplit(output_path, "/")[[1]][length(strsplit(output_path, "/")[[1]])],
+        query   = search_terms,
+        url     = img_link
+      )
+      gi_results <- rbind(gi_results, dat)
+    }
   }
 
   if (verbose) {
