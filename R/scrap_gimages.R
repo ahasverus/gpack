@@ -459,7 +459,7 @@ scrap_gimages <- function(
     ### Go to original image                                                    ----------
 
 
-    Sys.sleep(.5)
+    Sys.sleep(sample(seq(0, 2, by = 0.01), 1))
 
     thumb_links[[k]]$clickElement()
 
@@ -490,16 +490,14 @@ scrap_gimages <- function(
 
     ### Download original image                                                 ----------
 
-    Sys.sleep(.5)
-
-    attempt <- tryCatch({
-      utils::download.file(
-        url       = img_link,
-        destfile  = file.path(output_path, paste0("IMG", photo_id, ".jpg")),
-        quiet     = TRUE
-      )},
-      error = function(e){}
-    )
+    # attempt <- tryCatch({
+    #   utils::download.file(
+    #     url       = img_link,
+    #     destfile  = file.path(output_path, paste0("IMG", photo_id, ".jpg")),
+    #     quiet     = TRUE
+    #   )},
+    #   error = function(e){}
+    # )
 
     if (!is.null(attempt)) {
 
