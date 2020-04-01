@@ -21,6 +21,7 @@
 #' @param output_path The path to the folder to save data.
 #' @param exposed_ip The unprotected IPv4 address.
 #' @param rs_driver An RSelenium server.
+#' @param download A boolean. If TRUE, original picture will be downloaded.
 #'
 #' @return The RSelenium server
 #'
@@ -46,7 +47,7 @@
 scrap_gimages <- function(
   search_terms, start = 0, n_max = NULL, rs_driver = NULL, openvpn = TRUE,
   config_path = "~/.ovpn", ovpn_country, agent = TRUE, sleep = 1,
-  verbose = TRUE, output_path = ".", exposed_ip = NULL
+  verbose = TRUE, output_path = ".", exposed_ip = NULL, download = TRUE
 ) {
 
 
@@ -459,25 +460,14 @@ scrap_gimages <- function(
     ### Go to original image                                                    ----------
 
 
-    Sys.sleep(sample(seq(0, 2, by = 0.01), 1))
-
     thumb_links[[k]]$clickElement()
 
+    Sys.sleep(sample(seq(0, 2, by = 0.01), 1))
 
-
-    ### Get original image URL                                                  ----------
-
-
-    img_link <- rs_driver$client$findElements(using = "tag", value = "img")
-
-    img_link <- unlist(
-      sapply(
-        img_link,
-        function(x){
-          x$getElementAttribute("src")
-        }
-      )
-    )
+    session  <- rs_driver$client$getPageSource()[[1]]
+    session  <- xml2::read_html(session)
+    img_link <- rvest::html_nodes(session, "img")
+    img_link <- rvest::html_attr(img_link, "src")
 
     img_link <- img_link[grep("^http", img_link)]
 
@@ -487,32 +477,32 @@ scrap_gimages <- function(
     }
 
 
+    if (length(img_link)) {
 
-    ### Download original image                                                 ----------
+      ### Download original image                                                 ----------
 
-    # attempt <- tryCatch({
-    #   utils::download.file(
-    #     url       = img_link,
-    #     destfile  = file.path(output_path, paste0("IMG", photo_id, ".jpg")),
-    #     quiet     = TRUE
-    #   )},
-    #   error = function(e){}
-    # )
+      if (download) {
 
-    #if (!is.null(attempt)) {
+        attempt <- tryCatch({
+          utils::download.file(
+            url       = img_link,
+            destfile  = file.path(output_path, paste0("IMG", photo_id, ".jpg")),
+            quiet     = TRUE
+          )},
+          error = function(e){}
+        )
+      }
+
+      dat <- data.frame(
+        species  = strsplit(output_path, "/")[[1]][length(strsplit(output_path, "/")[[1]])],
+        query    = search_terms,
+        photo_id = paste0("IMG", photo_id),
+        url      = img_link
+      )
+      gi_results <- rbind(gi_results, dat)
 
       count    <- count + 1
       photo_id <- photo_id + 1
-    #}
-
-    if (length(img_link)) {
-
-      dat <- data.frame(
-        species = strsplit(output_path, "/")[[1]][length(strsplit(output_path, "/")[[1]])],
-        query   = search_terms,
-        url     = img_link
-      )
-      gi_results <- rbind(gi_results, dat)
     }
   }
 

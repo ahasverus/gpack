@@ -16,7 +16,8 @@ scrap_gimages(
   sleep = 1,
   verbose = TRUE,
   output_path = ".",
-  exposed_ip = NULL
+  exposed_ip = NULL,
+  download = TRUE
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ scrap_gimages(
 \item{output_path}{The path to the folder to save data.}
 
 \item{exposed_ip}{The unprotected IPv4 address.}
+
+\item{download}{A boolean. If TRUE, original picture will be downloaded.}
 }
 \value{
 The RSelenium server
