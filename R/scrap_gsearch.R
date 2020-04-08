@@ -142,7 +142,11 @@ scrap_gsearch <- function(
   env$search_terms <- search_terms
   check_string("search_terms", env)
 
-  search_terms <- escape_url(search_terms)
+  original_terms <- search_terms
+  original_terms <- strsplit(original_terms, " OR ")[[1]][1]
+  original_terms <- gsub("'", "", original_terms)
+
+  search_terms   <- escape_url2(search_terms)
 
 
   if (missing(ovpn_country)) {
@@ -164,7 +168,7 @@ scrap_gsearch <- function(
 
     cli::cat_line(crayon::underline("Request details"))
 
-    terms <- usethis::ui_value(gsub('%20', ' ', search_terms))
+    terms <- usethis::ui_value(original_terms)
     terms <- paste(terms, "(keywords)")
     terms <- paste0(" Searching for ", terms)
 
@@ -173,22 +177,23 @@ scrap_gsearch <- function(
 
 
 
-  ### Write GS request                                                        ----------
+  ### Write GS request                                                          ----------
 
 
 
   url <- paste0(
-    "https://www.google.com/search",      # URL Root
+    "https://www.google.com/search",                 # URL Root
     "?safe=active",                                  # Secure Search
     "&hl=en",                                        # Interface Language
-    "&q=",                                      # Exact terms (in same order)
-    "%22", search_terms, "%22"
+    "&q=",                                           # Exact terms (in same order)
+    search_terms,
+    "&as_qdr=all"
   )
 
 
 
   filename <- paste0(
-    tolower(gsub("%20", "_", search_terms)),
+    tolower(gsub("\\s", "_", original_terms)),
     "_",
     format(Sys.time(), "%y%m%d%H%M%S")
   )
@@ -336,7 +341,7 @@ scrap_gsearch <- function(
   ### Get Total Matches                                                         ----------
 
 
-  n_matches <- rs_driver$client$findElement(using = "id", value = "mBMHK")
+  n_matches <- rs_driver$client$findElement(using = "id", value = "result-stats")
 
   total <- n_matches$getElementText()[[1]]
   total <- gsub("\\(.+\\)|About|results|result|[[:space:]]|[[:punct:]]", "", total)
@@ -373,7 +378,7 @@ scrap_gsearch <- function(
   dir.create(
     file.path(
       output_path,
-      tolower(gsub("%20", "_", search_terms))
+      tolower(gsub("\\s", "_", original_terms))
     ),
     showWarnings = FALSE,
     recursive    = TRUE
@@ -383,7 +388,7 @@ scrap_gsearch <- function(
     total,
     file = file.path(
       output_path,
-      tolower(gsub("%20", "_", search_terms)),
+      tolower(gsub("\\s", "_", original_terms)),
       paste0(filename)
     )
   )
