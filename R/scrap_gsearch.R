@@ -338,6 +338,17 @@ scrap_gsearch <- function(
 
 
 
+  ### Check spelling                                                            ----------
+
+  clicker <- rs_driver$client$findElements(using = "class", value = "spell_orig")
+
+  if (length(clicker)) {
+
+    clicker[[2]]$clickElement()
+  }
+
+
+
   ### Get Total Matches                                                         ----------
 
 
