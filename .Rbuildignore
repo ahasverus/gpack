@@ -1,4 +1,8 @@
 ^LICENSE\.md$
-^\.travis\.yml$
-^.*\.Rproj$
+^gpack\.Rproj$
 ^\.Rproj\.user$
+^\.DS_Store$
+^README\.Rmd$
+^README\.html$
+^\.github$
+^_pkgdown\.yaml$

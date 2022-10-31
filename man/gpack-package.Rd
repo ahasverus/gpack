@@ -4,9 +4,9 @@
 \name{gpack-package}
 \alias{gpack}
 \alias{gpack-package}
-\title{gpack: Tools for webscraping Google Services (Scholar, Pictures, Trends, Search)}
+\title{gpack: Webscrap Google Services (Scholar, Pictures, Trends, Search)}
 \description{
-This package provides tools for webscraping Google Services (Scholar, Pictures, Trends, Search) using OpenVPN to get around IP bans. Webscrap can be performed using RSelenium or classical webscraping (\code{rvest} + \code{httr}).
+This package provides tools for webscraping Google Services (Scholar, Pictures, Trends, Search) using OpenVPN to get around IP bans. Webscrap is performed by RSelenium.
 }
 \seealso{
 Useful links:
@@ -17,7 +17,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Nicolas Casajus \email{nicolas.casajus@gmail.com}
+\strong{Maintainer}: Nicolas Casajus \email{nicolas.casajus@gmail.com} (\href{https://orcid.org/0000-0002-5537-5294}{ORCID}) [copyright holder]
 
 }
 \keyword{internal}
