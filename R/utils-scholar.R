@@ -31,7 +31,7 @@ avoid_ban <- function(rs_driver, url, agent, ovpn_country, path, verbose) {
         
         messages::msg_line()
         messages::msg_line()
-        messages::msg_line(crayon::underline("Google Scholar ban"))
+        messages::msg_line(crayon::underline("G**gle Scholar ban"))
       }
     }
     
@@ -65,7 +65,7 @@ avoid_ban <- function(rs_driver, url, agent, ovpn_country, path, verbose) {
     ## Prevent infinite loop ----
     
     if (k > 10) {
-      stop("You have been permanently banned from Google Scholar",
+      stop("You have been permanently banned from G**gle Scholar",
            call. = FALSE)
     }
   }

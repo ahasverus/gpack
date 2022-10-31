@@ -2,7 +2,7 @@
 % Please edit documentation in R/get-languages.R
 \name{get_languages}
 \alias{get_languages}
-\title{Get the ISO-2 code of Google Scholar languages}
+\title{Get the ISO-2 code of G**gle Scholar languages}
 \usage{
 get_languages(pattern = NULL)
 }
@@ -19,7 +19,7 @@ A 2-column \code{data.frame} with:
 }
 \description{
 Returns names and ISO-2 codes for 43 World languages supported by
-\strong{Google Scholar}. User can search for specific patterns (see examples
+\strong{Scholar}. User can search for specific patterns (see examples
 below).
 }
 \examples{

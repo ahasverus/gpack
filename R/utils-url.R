@@ -22,10 +22,10 @@ escape_url <- function(x) {
 
 
 
-#' Shorten a Google Scholar URL
+#' Shorten a G**gle Scholar URL
 #'
 #' @description
-#' Shortens a Google Scholar URL
+#' Shortens a G**gle Scholar URL
 #'
 #' @param url a `character` of length 1. An URL to shorten.
 #'

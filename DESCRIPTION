@@ -1,6 +1,6 @@
 Package: gpack
 Type: Package
-Title: Webscrap Google Services (Scholar, Pictures, Trends, Search)
+Title: Webscrap G**gle Services (Scholar, Pictures, Trends, Search)
 Version: 0.0.1
 Authors@R: c(
     person(given   = "Nicolas",

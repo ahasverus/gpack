@@ -4,7 +4,7 @@
 \name{gpack-package}
 \alias{gpack}
 \alias{gpack-package}
-\title{gpack: Webscrap Google Services (Scholar, Pictures, Trends, Search)}
+\title{gpack: Webscrap G**gle Services (Scholar, Pictures, Trends, Search)}
 \description{
 This package provides tools for webscraping Google Services (Scholar, Pictures, Trends, Search) using OpenVPN to get around IP bans. Webscrap is performed by RSelenium.
 }

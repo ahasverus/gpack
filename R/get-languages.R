@@ -1,8 +1,8 @@
-#' Get the ISO-2 code of Google Scholar languages
+#' Get the ISO-2 code of G**gle Scholar languages
 #'
 #' @description 
 #' Returns names and ISO-2 codes for 43 World languages supported by 
-#' **Google Scholar**. User can search for specific patterns (see examples 
+#' **Scholar**. User can search for specific patterns (see examples 
 #' below).
 #'
 #' @param pattern a `character` of length 1. A regular expression to be matched 

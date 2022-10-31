@@ -15,27 +15,11 @@ MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://choosealicens
 <!-- badges: end -->
 
 The goal of the R package `gpack` is to provide tools to web scraping
-Google Services (Scholar, Pictures, Trends, Search). As Google does not
+G**gle Services (Scholar, Pictures, Trends, Search). As G**gle does not
 provide any API and does not allow web scraping, user public IP address
 can be banned. This package relies on the software OpenVPN to
 periodically change the IP address and the user-agent (i.e. the
 technical information about your system).
-
-## Installation
-
-You can install the development version from
-[GitHub](https://github.com/) with:
-
-``` r
-# install.packages("remotes")
-remotes::install_github("ahasverus/gpack")
-```
-
-Then you can attach the package `gpack`:
-
-``` r
-library("gpack")
-```
 
 ## System requirements
 
@@ -75,19 +59,35 @@ The Docker image
 must be installed. This image contains the Selenium technology running a
 Firefox browser.
 
+## Installation
+
+You can install the development version from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("ahasverus/gpack")
+```
+
+Then you can attach the package `gpack`:
+
+``` r
+library("gpack")
+```
+
 ## Overview
 
 The package `gpack` provides two main function:
 
 - `check_system()`: must be run first to change the integrity of the
   system
-- `scrap_gscholar()`: get references metadata from Google Scholar
+- `scrap_gscholar()`: get references metadata from G\*\*gle Scholar
 
 ## Citation
 
 Please cite this package as:
 
-> Casajus N (2022) gpack: An R package to web scrap Google Services
+> Casajus N (2022) gpack: An R package to web scrap G\*\*gle Services
 > (Scholar, Pictures, Trends, Search). R package version 0.0.1.
 
 ## Code of Conduct
