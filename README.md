@@ -18,7 +18,8 @@ The goal of the R package `gpack` is to provide tools to web scraping
 Google Services (Scholar, Pictures, Trends, Search). As Google does not
 provide any API and does not allow web scraping, user public IP address
 can be banned. This package relies on the software OpenVPN to
-periodically change the IP address.
+periodically change the IP address and the user-agent (i.e. the
+technical information about your system).
 
 ## Installation
 
