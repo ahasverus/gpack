@@ -1,13 +1,13 @@
 detect_captcha <- function(rs_driver) {
   
-  captcha <- rs_driver$client$findElements(using = "id", value = "gs_captcha_c")
+  captcha <- rs_driver$findElements(using = "id", value = "gs_captcha_c")
   
   if (!length(captcha)) {
-    captcha <- rs_driver$client$findElements(using = "id", value = "recaptcha")
+    captcha <- rs_driver$findElements(using = "id", value = "recaptcha")
   }
   
   if (!length(captcha)) {
-    captcha <- rs_driver$client$findElement(using = "tag", value = "div")
+    captcha <- rs_driver$findElement(using = "tag", value = "div")
     captcha <- grep("\\\nip addr", tolower(captcha$getElementText()))
   }
   

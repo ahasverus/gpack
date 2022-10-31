@@ -8,7 +8,7 @@ Authors@R: c(
            role    = c("aut", "cre", "cph"),
            email   = "nicolas.casajus@gmail.com",
            comment = c(ORCID = "0000-0002-5537-5294")))
-Description: This package provides tools for webscraping Google Services 
+Description: This package provides tools for webscraping G**gle Services 
     (Scholar, Pictures, Trends, Search) using OpenVPN to get around IP bans. 
     Webscrap is performed by RSelenium.
 License: MIT + file LICENSE
