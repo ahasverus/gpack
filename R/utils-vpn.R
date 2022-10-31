@@ -96,17 +96,17 @@ stop_vpn <- function(verbose = TRUE) {
     if (std == 0) {
       
       Sys.sleep(2)
-      ip <- get_ip()
+      # ip <- get_ip()
       messages::msg_done("OpenVPN has been successfully stopped")
       
     } else {
       
-      ip <- get_ip()
+      # ip <- get_ip()
       messages::msg_todo("OpenVPN was already stopped")
     }
     
-    messages::msg_info("Unprotected public IP address:", 
-                       messages::msg_value(ip))
+    # messages::msg_info("Unprotected public IP address:", 
+                       # messages::msg_value(ip))
   }
   
   invisible(NULL)
@@ -167,7 +167,7 @@ start_vpn <- function(server, verbose = TRUE) {
   
   if (verbose) {
     messages::msg_done("Successfully connected to", messages::msg_value(server))
-    messages::msg_done("New public IP address:", messages::msg_value(get_ip()))
+  # messages::msg_done("New public IP address:", messages::msg_value(get_ip()))
   }
   
   invisible(NULL)
@@ -204,7 +204,8 @@ start_vpn <- function(server, verbose = TRUE) {
 #' close_vpn()
 #' }
 
-change_ip <- function(country = NULL, ignore_files = NULL, verbose = TRUE) {
+change_ip <- function(rs_driver, country = NULL, ignore_files = NULL, 
+                      verbose = TRUE) {
   
   
   ## Check system ----
@@ -259,6 +260,14 @@ change_ip <- function(country = NULL, ignore_files = NULL, verbose = TRUE) {
   
   while (server == "offline") {
     
+    
+    ## Prevent infinite loop ----
+    
+    if (k > 10) {
+      stop("Unable to find an appropriate VPN server", call. = FALSE)
+    }
+    
+    
     ## Select a VPN server ----
     
     config_file <- sample(config_files, 1)
@@ -271,25 +280,18 @@ change_ip <- function(country = NULL, ignore_files = NULL, verbose = TRUE) {
     
     ## Test server ----
     
-    test <- suppressMessages(tryCatch(get_ip(), error = function(e) NA))
+    rs_driver$refresh()
     
-    if (!is.na(test)) {
+    server <- suppressMessages(
+      tryCatch(rs_driver$navigate("https://scholar.google.com"), 
+               error   = function(e) "offline"))
+    
+    if (is.null(server)) {
       server <- "online"
     }
     
-    
-    ## Prevent infinite loop ----
-    
-    if (k > 10) {
-      stop("Unable to find an appropriate VPN server", call. = FALSE)
-    }
-    
-    
     k <- k + 1
   }
-  
-  
-  
   
   invisible(config_file)
 }

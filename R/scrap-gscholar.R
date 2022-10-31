@@ -329,8 +329,13 @@ scrap_gscholar <- function(search_terms, exact = TRUE, exclude_terms = NULL,
 
     messages::msg_info(paste(term_0, terms))
   }
-
-
+  
+  
+  ## Start RSelenium server ----
+  
+  rs_driver <- start_selenium(output_path, agent = agent)
+  
+  
   ## Change IP address ----
 
   if (verbose) {
@@ -339,13 +344,8 @@ scrap_gscholar <- function(search_terms, exact = TRUE, exclude_terms = NULL,
     messages::msg_line(crayon::underline("Activating VPN protection"))
   }
 
-  vpn_servers <- change_ip(country = ovpn_country, ignore_files = NULL,
-                           verbose = verbose)
-
-
-  ## Start RSelenium server ----
-
-  rs_driver <- start_selenium(output_path, agent = agent)
+  vpn_servers <- change_ip(rs_driver, country = ovpn_country, 
+                           ignore_files = NULL, verbose = verbose)
 
 
   next_btn   <- vector("list", 1)        # Next Page Button (used in while loop)

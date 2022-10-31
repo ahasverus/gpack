@@ -23,6 +23,15 @@ avoid_ban <- function(rs_driver, url, agent, ovpn_country, path, verbose) {
   
   while (length(captcha)) {
     
+    
+    ## Prevent infinite loop ----
+    
+    if (k > 10) {
+      stop("You have been permanently banned from G**gle Scholar",
+           call. = FALSE)
+    }
+    
+    
     ## Ban message ----
     
     if (k == 1) {
@@ -50,23 +59,14 @@ avoid_ban <- function(rs_driver, url, agent, ovpn_country, path, verbose) {
       
     ## Refresh RSelenium ----
     
-    rs_driver$refresh()
+    rs_driver$navigate(url)
     
     
     ## Check for ban ----
     
     captcha <- detect_captcha(rs_driver)
     
-  
     k <- k + 1
-    
-    
-    ## Prevent infinite loop ----
-    
-    if (k > 10) {
-      stop("You have been permanently banned from G**gle Scholar",
-           call. = FALSE)
-    }
   }
   
   rs_driver
