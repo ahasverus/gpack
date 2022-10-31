@@ -33,22 +33,6 @@ and the user-agent (i.e. the technical information about your system).
 
 
 
-## Installation
-
-You can install the development version from [GitHub](https://github.com/) with:
-
-```{r eval = FALSE}
-# install.packages("remotes")
-remotes::install_github("ahasverus/gpack")
-```
-
-Then you can attach the package `gpack`:
-
-```{r eval = FALSE}
-library("gpack")
-```
-
-
 ## System requirements
 
 Before using the package `gpack` you must follow these instructions:
@@ -87,6 +71,23 @@ container.
 The Docker image 
 [`selenium/standalone-firefox`](https://hub.docker.com/r/selenium/standalone-firefox) 
 must be installed. This image contains the Selenium technology running a Firefox browser.
+
+
+
+## Installation
+
+You can install the development version from [GitHub](https://github.com/) with:
+
+```{r eval = FALSE}
+# install.packages("remotes")
+remotes::install_github("ahasverus/gpack")
+```
+
+Then you can attach the package `gpack`:
+
+```{r eval = FALSE}
+library("gpack")
+```
 
 
 
