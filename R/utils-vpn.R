@@ -169,7 +169,7 @@ start_vpn <- function(server, verbose = TRUE) {
     messages::msg_done("Successfully connected to", messages::msg_value(server))
     messages::msg_done("New public IP address:", messages::msg_value(get_ip()))
   }
-
+  
   invisible(NULL)
 }
 
@@ -253,14 +253,43 @@ change_ip <- function(country = NULL, ignore_files = NULL, verbose = TRUE) {
   }
   
   
-  ## Select a VPN server ----
+  k <- 1
   
-  config_file <- sample(config_files, 1)
+  server <- "offline"
+  
+  while (server == "offline") {
+    
+    ## Select a VPN server ----
+    
+    config_file <- sample(config_files, 1)
+    
+    
+    ## Stop and start OpenVPN ----
+    
+    start_vpn(server = config_file, verbose)
+    
+    
+    ## Test server ----
+    
+    test <- suppressMessages(tryCatch(get_ip(), error = function(e) NA))
+    
+    if (!is.na(test)) {
+      server <- "online"
+    }
+    
+    
+    ## Prevent infinite loop ----
+    
+    if (k > 10) {
+      stop("Unable to find an appropriate VPN server", call. = FALSE)
+    }
+    
+    
+    k <- k + 1
+  }
   
   
-  ## Stop and start OpenVPN ----
   
-  start_vpn(server = config_file, verbose)
   
   invisible(config_file)
 }

@@ -41,25 +41,24 @@ avoid_ban <- function(rs_driver, url, agent, ovpn_country, path, verbose) {
     
     ## Change IP address ----
     
-    stop_selenium()
+    # stop_selenium()
     
     stop_vpn(verbose = FALSE)
     
     change_ip(country = ovpn_country, ignore_files = NULL, verbose = verbose)
     
+      
+    ## Refresh RSelenium ----
     
-    ## Restart RSelenium ----
-    
-    rs_driver <- start_selenium(path, agent)
-    
-    rs_driver$navigate(url)
-    
-    k <- k + 1
+    rs_driver$refresh()
     
     
     ## Check for ban ----
     
     captcha <- detect_captcha(rs_driver)
+    
+  
+    k <- k + 1
     
     
     ## Prevent infinite loop ----

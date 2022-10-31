@@ -370,7 +370,7 @@ scrap_gscholar <- function(search_terms, exact = TRUE, exclude_terms = NULL,
 
     ## Open URL in Browser ----
 
-    rs_driver$navigate(url)
+    suppressMessages(rs_driver$navigate(url))
 
     
     ## Avoid G**gle Ban ----
@@ -383,12 +383,14 @@ scrap_gscholar <- function(search_terms, exact = TRUE, exclude_terms = NULL,
 
     if (!nrow(gs_results)) {
 
-      n_matches <- rs_driver$findElement(using = "id", value = "gs_ab_md")
-
-      total <- n_matches$getElementText()[[1]]
+      session  <- rs_driver$getPageSource()[[1]]
+      session  <- xml2::read_html(session)
+      gs_block <- rvest::html_nodes(session, "#gs_ab_md")
+      total    <- rvest::html_text(gs_block)
+      
       total <- gsub("\\(.+\\)|About|results|result|[[:space:]]|[[:punct:]]", 
                     "", total)
-      total <- as.numeric(total)
+      total <- suppressWarnings(as.numeric(total))
       total <- ifelse(is.na(total), 0, total)
 
       if (total == 0) end_of <- TRUE else end_of <- FALSE
