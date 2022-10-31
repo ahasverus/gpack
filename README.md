@@ -15,9 +15,9 @@ MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://choosealicens
 <!-- badges: end -->
 
 The goal of the R package `gpack` is to provide tools to web scraping
-G**gle Services (Scholar, Pictures, Trends, Search). As G**gle does not
-provide any API and does not allow web scraping, user public IP address
-can be banned. This package relies on the software OpenVPN to
+G\*\*gle Services (Scholar, Pictures, Trends, Search). As G\*\*gle does
+not provide any API and does not allow web scraping, user public IP
+address can be banned. This package relies on the software OpenVPN to
 periodically change the IP address and the user-agent (i.e. the
 technical information about your system).
 
