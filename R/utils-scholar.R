@@ -11,10 +11,10 @@ detect_captcha <- function(rs_driver) {
   #   captcha <- grep("\\\nip addr", tolower(captcha$getElementText()))
   # }
   
-  if (!length(captcha)) {
+  # if (!length(captcha)) {
     session <- rs_driver$getPageSource()[[1]]
     captcha <- grep("sending automated queries", session)
-  }
+  # }
   
   captcha
 }
