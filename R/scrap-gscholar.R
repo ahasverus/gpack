@@ -395,7 +395,8 @@ scrap_gscholar <- function(search_terms, exact = TRUE, exclude_terms = NULL,
 
       if (length(total) == 0) {
         
-        cat(paste0(spname, " : ", years), file = "to_check.txt", append = TRUE)
+        cat(paste0(spname, " : ", paste0(years, collapse = "-")), 
+            file = "to_check.txt", append = TRUE)
         end_of <- FALSE
         
       } else {
