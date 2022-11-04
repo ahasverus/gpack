@@ -394,11 +394,14 @@ scrap_gscholar <- function(search_terms, exact = TRUE, exclude_terms = NULL,
       total <- ifelse(is.na(total), 0, total)
 
       if (length(total) == 0) {
+        
         cat(paste0(spname, " : ", years), file = "to_check.txt", append = TRUE)
         end_of <- FALSE
+        
+      } else {
+        
+        if (total == 0) end_of <- TRUE else end_of <- FALSE 
       }
-      
-      if (total == 0) end_of <- TRUE else end_of <- FALSE
 
       if (verbose) {
 
