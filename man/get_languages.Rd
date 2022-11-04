@@ -2,7 +2,7 @@
 % Please edit documentation in R/get-languages.R
 \name{get_languages}
 \alias{get_languages}
-\title{Get the ISO-2 code of G**gle Scholar languages}
+\title{Get the ISO-2 code of Google Scholar languages}
 \usage{
 get_languages(pattern = NULL)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/scrap-gscholar.R
 \name{scrap_gscholar}
 \alias{scrap_gscholar}
-\title{Retrieve metadata from G**gle Scholar}
+\title{Retrieve metadata from Google Scholar}
 \usage{
 scrap_gscholar(
   search_terms,
@@ -83,14 +83,14 @@ save data.}
 No return value.
 }
 \description{
-Sends a request to G**gle Scholar service and retrieves results (title,
+Sends a request to Google Scholar service and retrieves results (title,
 authors, source and year of publications, and the total number of citations).
 
-As no API is provided by G\strong{gle Scholar (except the one for authors with a
-G}gle Scholar ID), this function scraps the service using the package
+As no API is provided by Google Scholar (except the one for authors with a
+Google Scholar ID), this function scraps the service using the package
 \code{\link{RSelenium}}.
 
-To bypass G**gle IP bans, the IP address and the User agent will be changed
+To bypass Google IP bans, the IP address and the User agent will be changed
 in case of ban.
 }
 \examples{

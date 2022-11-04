@@ -1,4 +1,4 @@
-#' Get the ISO-2 code of G**gle Scholar languages
+#' Get the ISO-2 code of Google Scholar languages
 #'
 #' @description 
 #' Returns names and ISO-2 codes for 43 World languages supported by 

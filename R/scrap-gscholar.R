@@ -1,14 +1,14 @@
-#' Retrieve metadata from G**gle Scholar
+#' Retrieve metadata from Google Scholar
 #'
 #' @description
-#' Sends a request to G**gle Scholar service and retrieves results (title, 
+#' Sends a request to Google Scholar service and retrieves results (title, 
 #' authors, source and year of publications, and the total number of citations).
 #' 
-#' As no API is provided by G**gle Scholar (except the one for authors with a 
-#' G**gle Scholar ID), this function scraps the service using the package 
+#' As no API is provided by Google Scholar (except the one for authors with a 
+#' Google Scholar ID), this function scraps the service using the package 
 #' [`RSelenium`].
 #' 
-#' To bypass G**gle IP bans, the IP address and the User agent will be changed
+#' To bypass Google IP bans, the IP address and the User agent will be changed
 #' in case of ban.
 #'
 #' @param search_terms a `character` of length 1. Terms to search papers for
@@ -244,7 +244,7 @@ scrap_gscholar <- function(search_terms, exact = TRUE, exclude_terms = NULL,
   if (verbose) {
 
     messages::msg_line()
-    messages::msg_rule(left = "Scraping G**gle Scholar", line_col = "darkgrey")
+    messages::msg_rule(left = "Scraping Google Scholar", line_col = "darkgrey")
     messages::msg_line()
 
     messages::msg_line(cli::style_underline("Request details"))
@@ -373,7 +373,7 @@ scrap_gscholar <- function(search_terms, exact = TRUE, exclude_terms = NULL,
     suppressMessages(rs_driver$navigate(url))
 
     
-    ## Avoid G**gle Ban ----
+    ## Avoid Google Ban ----
     
     rs_driver <- avoid_ban(rs_driver, url, agent, ovpn_country, output_path, 
                            verbose)
