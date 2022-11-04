@@ -59,7 +59,8 @@ avoid_ban <- function(rs_driver, url, agent, ovpn_country, path, verbose) {
     
     stop_vpn(verbose = FALSE)
     
-    change_ip(country = ovpn_country, ignore_files = NULL, verbose = verbose)
+    change_ip(rs_driver, country = ovpn_country, ignore_files = NULL, 
+              verbose = verbose)
     
       
     ## Refresh RSelenium ----
