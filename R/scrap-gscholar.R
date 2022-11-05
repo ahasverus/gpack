@@ -396,12 +396,24 @@ scrap_gscholar <- function(search_terms, exact = TRUE, exclude_terms = NULL,
       if (length(total) == 0) {
         
         cat(paste0(spname, " : ", paste0(years, collapse = "-")), 
-            file = "to_check.txt", append = TRUE)
+            file = "fails.txt", append = TRUE)
         end_of <- FALSE
         
       } else {
         
-        if (total == 0) end_of <- TRUE else end_of <- FALSE 
+        if (total == 0) end_of <- TRUE else end_of <- FALSE
+        
+        if (metadata) {
+          
+          if ((total > 999 && is.null(n_max)) || (total > 999 && n_max > 999)) {
+            
+            cat(paste0(spname, " : ", paste0(years, collapse = "-")), 
+                file = "exceeds.txt", append = TRUE)
+            # messages::msg_todo("Only the first 999 results will be extracted")
+            # messages::msg_line("You may shorten the search period with the", 
+            #                    "argument", messages::msg_field('years'))
+          }
+        }
       }
 
       if (verbose) {
@@ -410,16 +422,6 @@ scrap_gscholar <- function(search_terms, exact = TRUE, exclude_terms = NULL,
         messages::msg_line(crayon::underline("Response details"))
         messages::msg_info("Estimated number of results:", 
                            messages::msg_value(total))
-
-        if (metadata) {
-
-          if ((total > 999 && is.null(n_max)) || (total > 999 && n_max > 999)) {
-
-            messages::msg_todo("Only the first 999 results will be extracted")
-            messages::msg_line("You may shorten the search period with the", 
-                               "argument", messages::msg_field('years'))
-          }
-        }
       }
     }
 
