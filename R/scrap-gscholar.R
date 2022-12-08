@@ -395,7 +395,7 @@ scrap_gscholar <- function(search_terms, exact = TRUE, exclude_terms = NULL,
 
       if (length(total) == 0) {
         
-        cat(paste0(spname, " : ", paste0(years, collapse = "-")), 
+        cat(paste0(spname, " : ", paste0(years, collapse = "-"), "\n"), 
             file = "fails.txt", append = TRUE)
         end_of <- FALSE
         
@@ -407,7 +407,7 @@ scrap_gscholar <- function(search_terms, exact = TRUE, exclude_terms = NULL,
           
           if ((total > 999 && is.null(n_max)) || (total > 999 && n_max > 999)) {
             
-            cat(paste0(spname, " : ", paste0(years, collapse = "-")), 
+            cat(paste0(spname, " : ", paste0(years, collapse = "-"), "\n"), 
                 file = "exceeds.txt", append = TRUE)
             # messages::msg_todo("Only the first 999 results will be extracted")
             # messages::msg_line("You may shorten the search period with the", 
