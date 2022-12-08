@@ -68,7 +68,7 @@ stop_selenium <- function() {
   check_selenium()
   
   
-  containers <- system("docker ps", intern = TRUE, ignore.stderr = TRUE)
+  containers <- system("docker ps -a", intern = TRUE, ignore.stderr = TRUE)
   containers <- containers[-1]
   
   
